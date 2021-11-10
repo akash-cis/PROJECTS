@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Page Content  -->
+    <div id="content" class="">
+    	<div class="dashboard">
+       		<h2 class="global_title">Super Admin Dashboard</h2>
+            <!-- Dash Blocks -->
+            <div class="dash_blocks">
+            	<div class="row">
+                	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details">
+                            	<h3>{{object_list.count}}</h3>
+                                <small>Total Builders</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_1.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details">
+                            	<h3>{{active_user_count}}</h3>
+                                <small>Active Builders</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_2.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block block_2">
+                            <div class="details">
+                            	<h3>{{inactive_user_count}}</h3>
+                                <small>Inactive Builders</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_3.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            {% if messages %}
+                <div class="fix_alert">
+                    {% for message in messages %}
+                    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                        {{message}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- List of Tradies -->
+            <div class="trade_list">
+            	<div class="row">
+                	<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                    	<h2 class="global_title">List of Builders</h2>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 text-right">
+                    	<a href="#" id="AddUserBtn" class="btn btn-primary" data-toggle="modal" data-target="#AddUser"><i class="fa fa-plus-circle"></i> Add Builder</a>
+                    </div>
+                </div>
+                
+                <!-- Table Info -->
+                <div class="table_info">
+                    <div class="table-responsive">
+                    	<table class="table table-borderless table-striped">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Name</th>
+                              <th>Email</th>
+                              <th>Phone</th>
+                              <th>Status</th>
+                              <th>Role</th>
+                              <th>Company</th>
+                              {% comment %} <th>Update</th> {% endcomment %}
+                              <th>Update</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% comment %} {% if object_list.count == 1 and object_list.0.id == request.user.id%}
+                                <tr>
+                                    <td colspan="10" class="text-center">
+                                        No user yet.
+                                    </td>
+                                </tr>
+                            {% else %} {% endcomment %}
+                            {% for user in object_list %}
+                                {% comment %} {% if not user.id == request.user.id %} {% endcomment %}
+                                    <tr>
+                                        <td>{{user.id}}</td>
+                                        <td><a href="{% url 'super-admin-list-project' user.id %}">{{user.first_name}} {{user.last_name}}</a></td>
+                                        <td>{{user.email}}</td>
+                                        <td>{{user.contact}}</td>
+                                        <td><span class="status {% if not user.is_active %}red{% endif %}">{% if user.is_active %}Active{% else %}Close{% endif %}</span></td>
+                                        <td>{{user.role}}</td>
+                                        <td>{{user.company}}</td>
+                                        {% comment %} <td>
+                                        </td> {% endcomment %}
+                                        <td>
+                                            <a href="#" class="action_link updateuserbutton" id="{{user.id}}" data-toggle="modal" data-target="#AddUser" ><img src="{% static 'images/edit.svg' %}" alt=""></a><br>
+                                            <a href="{% url 'super-admin-delete-view' user.id %}" class="action_link dl_link" ><img src="{% static 'images/trash.svg' %}" alt=""></a>
+                                        </td>
+                                    </tr>
+                                {% comment %} {% endif %} {% endcomment %}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-center">
+                                        No user yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            {% comment %} {% endif %} {% endcomment %}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pagination Info -->
+                <div class="pagination_info">
+                	<div class="row">
+                    	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 align-self-center">
+                            <p>Showing {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                        </div>
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 text-right">
+                            <ul class="paging_info">
+                                {% if page_obj.has_previous %}
+                                    <li><a href="?page=1">&laquo; first</a></li>
+                                    <li><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                                {% endif %}
+                                    <li><a class="current">{{ page_obj.number }}</a></li>
+                                {% if page_obj.has_next %}
+                                    <li><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                                    <li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Add New User Modal -->
+    <div class="modal fade modal_info" id="AddUser" tabindex="-1" aria-labelledby="AddUserLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Add New Builders</h2>
+                <div class="form_info">
+                    <form method="POST" action="{% url 'super-admin-create-view' %}">{% csrf_token %}
+                        <input type="hidden" id="id_id" name="id">
+                        <div class="form-row">
+                            
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/user.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.first_name}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/user.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.last_name}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/phone.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.contact}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/email.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.email}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/suitcase.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.company}}
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="custom-control custom-checkbox">
+                                        {{add_form.is_active}}
+                                        <label class="custom-control-label" for="id_is_active">{{add_form.is_active.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group col-md-12">
+                                <button class="form_btns" type="submit">Add User</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade modal_info delete_modal" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Are you sure to Delete?</h2>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns red my-2" data-dismiss="modal">No</button>    
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns my-2" id="modal-delete-btn">Yes</button>    
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+<script src="{% static 'js/jquery-3.4.1.min.js' %}" ></script>
+{% block javascript %}
+<script>
+    $("#id_role option:first").attr({'disabled': 'true','selected': 'true'}); 
+    //$('#id_company').val({{request.user.company.id}});
+    $('td').on('click', '.updateuserbutton', function(){
+        let id = this.id
+        let csrf = $("input[name=csrfmiddlewaretoken").val();
+        data = {id: id, csrfmiddlewaretoken: csrf}
+        $.ajax({
+            url: "{% url 'builder-admin-edit-view' %}",
+            method: "POST",
+            data: data,
+            success: function(data){
+                $('#id_id').val(data.id);
+                $('#id_first_name').val(data.first_name);
+                $('#id_last_name').val(data.last_name);
+                $('#id_email').val(data.email);
+                $('#id_contact').val(data.contact);
+        
+                $('#id_company').parent().parent().hide()
+                $("#id_company").attr({'disabled': 'true'}); 
+        
+                $('#id_is_active').prop('checked', data.is_active); 
+
+                $('#AddUser .form_btns').html('Update Builder');
+                $('#AddUser h2').html('Update Builder');
+            }
+        });
+
+   });
+   $('#AddUserBtn').on('click', function(){
+        $('#id_id').val('');
+        
+        $('#id_company').parent().parent().show()
+        $("#id_company").attr({'disabled': false}); 
+        
+        $('#AddUser .form_btns').html('Add Builder');
+        $('#AddUser h2').html('Add Builder');
+        $('form')[0].reset();
+   });
+
+   $('.dl_link').click(function(e){
+        e.preventDefault();
+        del_url = this.href
+        $('#DeleteModal').modal('show');
+
+        $('#modal-delete-btn').click(function() { 
+            window.location.replace(del_url); 
+        });
+    });
+</script>
+{% endblock javascript %}
+{% endblock content %}

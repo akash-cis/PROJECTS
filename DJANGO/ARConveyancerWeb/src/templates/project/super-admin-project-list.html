@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Page Content  -->
+    <div id="content" class="">
+    	<div class="dashboard">
+       		<h2 class="global_title">Builder Dashboard</h2>
+            <!-- Dash Blocks -->
+            <div class="dash_blocks">
+            	<div class="row">
+                	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details">
+                            	<h3>{{project_count}}</h3>
+                                <small>Total Projects</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_1.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details">
+                            	<h3>{{active_project_count}}</h3>
+                                <small>Active Projects</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_2.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block block_2">
+                            <div class="details">
+                            	<h3>{{inactive_project_count}}</h3>
+                                <small>Inactive Projects</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_3.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+                <div class="fix_alert">
+                    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                        <strong>{{message.tags}}!</strong> {{message}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endif %}
+            
+            <!-- List of Tradies -->
+            <div class="trade_list">
+            	<div class="row">
+                	<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                    	<h2 class="global_title">List of Projects in {{company}}</h2>
+                    </div>
+                    {% comment %} <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 text-right">
+                    	<h2 class="global_title">Company:</h2> 
+                    	<a href="#" id="AddProjectBtn" class="btn btn-primary" data-toggle="modal" data-target="#AddProject"><i class="fa fa-plus-circle"></i> Add Project</a>
+                    </div> {% endcomment %}
+                </div>
+                
+                <!-- Table Info -->
+                <div class="table_info">
+                    <div class="table-responsive">
+                    	<table class="table table-borderless table-striped">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Name</th>
+                              <th>Address</th>
+                              <th>Email</th>
+                              <th>Phone</th>
+                              <th>Status</th>
+                              {% comment %} <th>Company</th> {% endcomment %}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for project in object_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{project.name}}</td>
+                                        <td>{{project.address}}</td>
+                                        <td>{{project.email}}</td>
+                                        <td>{{project.contact}}</td>
+                                        <td><span class="status {% if not project.status %}red{% endif %}">{% if project.status %}Active{% else %}Close{% endif %}</span></td>
+                                        {% comment %} <td>{{project.company}}</td> {% endcomment %}
+                                    </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-center">
+                                        No project yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pagination Info -->
+                <div class="pagination_info">
+                	<div class="row">
+                    	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 align-self-center">
+                            <p>Showing {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                        </div>
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 text-right">
+                            <ul class="paging_info">
+                                {% if page_obj.has_previous %}
+                                    <li><a href="?page=1">&laquo; first</a></li>
+                                    <li><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                                {% endif %}
+                                    <li><a class="current">{{ page_obj.number }}</a></li>
+                                {% if page_obj.has_next %}
+                                    <li><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                                    <li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Add New User Modal -->
+    <div class="modal fade modal_info" id="AddProject" tabindex="-1" aria-labelledby="AddProjectLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Add New Project</h2>
+                <div class="form_info">
+                    <form method="POST" action="{% url 'create-project' %}">{% csrf_token %}
+                        <input type="hidden" id="id_id" name="id">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/user.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.name}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-12 tarea">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/map.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.address}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/phone.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.contact}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/email.svg' %}" alt=""></div>
+                                    </div>
+                                    {{add_form.email}}
+                                </div>
+                            </div>
+                            
+                            {% comment %} <div class="form-group col-md-12">
+                                <div class="select_detail">
+                                    <i><img src="{% static 'images/suitcase.svg' %}" alt=""></i>
+                                    {{add_form.company}}
+                                </div>
+                            </div> {% endcomment %}
+
+
+                            <div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="custom-control custom-checkbox">
+                                        {{add_form.status}}
+                                        <label class="custom-control-label" for="id_status">{{add_form.status.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group col-md-12">
+                                <button class="form_btns" type="submit">Add Project</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade modal_info delete_modal" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Are you sure to Delete?</h2>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns red my-2" data-dismiss="modal">No</button>    
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns my-2" id="modal-delete-btn">Yes</button>    
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+<script src="{% static 'js/jquery-3.4.1.min.js' %}" ></script>
+{% block javascript %}
+<script>
+    $('td').on('click', '.updateprojectbutton', function(){
+        let id = this.id
+        let csrf = $("input[name=csrfmiddlewaretoken").val();
+        data = {id: id, csrfmiddlewaretoken: csrf}
+        $.ajax({
+            url: "{% url 'edit-project' %}",
+            method: "POST",
+            data: data,
+            success: function(data){
+                $('#id_id').val(data.id);
+                $('#id_name').val(data.name);
+                $('#id_address').val(data.address);
+                $('#id_email').val(data.email);
+                $('#id_contact').val(data.contact);
+                //$('#id_company').val(data.company);
+                $('#id_status').prop('checked', data.status); 
+                $('.form_btns').html('Update Project');
+                $('.modal h2').html('Update Project');
+            }
+        });
+
+   });
+   $('#AddProjectBtn').on('click', function(){
+        $("#id_id").removeAttr('value');
+        $('.form_btns').html('Add Project');
+        $('.modal h2').html('Add New Project');
+        $('form')[0].reset(); 
+   });
+
+   $('.dl_link').click(function(e){
+        e.preventDefault();
+        del_url = this.href
+        $('#DeleteModal').modal('show');
+
+        $('#modal-delete-btn').click(function() { 
+            window.location.replace(del_url); 
+        });
+    });
+</script>
+{% endblock javascript %}
+{% endblock content %}
+

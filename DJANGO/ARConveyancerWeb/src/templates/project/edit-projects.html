@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %} 
+    <!-- Page Content  -->
+    <div id="content" class="">
+    	<div class="dashboard">
+       		<h2 class="global_title">Builders Dashboard</h2>
+            
+            <!-- Table Info -->
+            <div class="table_info mb-30">
+                <div class="table-responsive">
+                    <table class="table table-borderless table-striped">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Address</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                          <th>Status</th>
+                          <th>Company</th>
+                          {% comment %} <th>Download</th> {% endcomment %}
+                          <th>Print</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{project.id}}</td>
+                          <td>{{project.name}}</td>
+                          <td>{{project.address|striptags}}</td>
+                          <td>{{project.email}}</td>
+                          <td>{{project.contact}}</td>
+                          <td><span class="status {% if not project.status %}red{% endif %}">{% if project.status %}Active{% else %}Close{% endif %}</span></td>
+                          <td>{{project.company}}</td>
+                          {% comment %} <td align="center"><a href="{{project.qr_code.url}}" download="{{project.qr_code.url}}" class=""><i class="fa fa-download"></i></a></td> {% endcomment %}
+                          <td align="center"><a class="print_qr" onClick="PrintImage('{{project.qr_code.url}}'); return false;" class=""><i class="fa fa-print fa-2x"></i></a><br><br><a href="{{project.qr_code.url}}" download="{{project.qr_code.url}}" class=""><i class="fa fa-download fa-2x"></i></a></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+            {% if messages %}
+                <div class="fix_alert">
+                    {% for message in messages %}
+                    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                        {{message}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <!-- Builder Info -->
+            <div class="builder_info">
+            	<div class="row">
+                	<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
+            			<!-- List of Tradies -->
+                        <div class="trade_list">
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                                    <h2 class="global_title">Projects Details</h2>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 text-right">
+                                    <a href="#" class="btn btn-primary" id="AddStageBtn" data-toggle="modal" data-target="#StageModal"><i class="fa fa-plus-circle"></i> Add Stages</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Table Info -->
+                            <div class="table_info stage_info">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless table-striped">
+                                      <thead>
+                                        <tr>
+                                          <th>Id</th>
+                                          <th>Stage Name</th>
+                                          <th>Tradie</th>
+                                          <th>Planned Date</th>
+                                          <th>Status</th>
+                                          <th>Edit</th>
+                                          <th>Delete</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for stage in page_obj %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{stage.name}}</td>
+                                                <td>{{stage.tradie}}</td>
+                                                <td>{{stage.plan_date}}</td>
+                                                <td><span class="status {% if not stage.status %}red{% endif %}">{% if stage.status %}Active{% else %}Close{% endif %}</span></td>
+                                                <td>
+                                                    <a href="#" class="action_link updatestagebutton" id="{{stage.id}}" data-toggle="modal" data-target="#StageModal" ><img src="{% static 'images/edit.svg' %}" alt=""></a>
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'delete-stage' stage.id %}" class="action_link dl_link" ><img src="{% static 'images/trash.svg' %}" alt=""></a>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="5" class="text-center">
+                                                    No Stage Added Yet.
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                      </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                <!-- Pagination Info -->
+                <div class="pagination_info">
+                	<div class="row">
+                    	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 align-self-center">
+                            <p>Showing {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                        </div>
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 text-right">
+                            <ul class="paging_info">
+                                {% if page_obj.has_previous %}
+                                    <li><a href="?page=1">&laquo; first</a></li>
+                                    <li><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                                {% endif %}
+                                    <li><a class="current">{{ page_obj.number }}</a></li>
+                                {% if page_obj.has_next %}
+                                    <li><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                                    <li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                            
+                        </div>
+            
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
+                    	<div class="stage_right">
+                        	<!-- Upload -->
+                            <form method = "post" action="{% url 'create-layer' %}" id="layer_form" enctype="multipart/form-data">{% csrf_token %}
+                                {{layer_add_form.project}}
+                                <div class="layer_project_upload">
+                                <div class="upload_btn">
+                                    <div class="upload_name">
+                                        {% comment %} <input type="text" name="" class="field" placeholder="Enter Name"> {% endcomment %}
+                                        {{layer_add_form.name}}
+                                    </div>
+                                    <div class="fileUpload btn btn-primary">
+                                        <span><i><img src="{% static 'images/upload_icon.svg' %}" alt=""></i>
+                                        Upload PNG File</span>
+                                        {{layer_add_form.png_image}}
+                                    </div>
+                                </div>
+                                </div>
+                                <input type="submit" hidden="true" id="layer_submit">
+                            </form>
+                            <!-- Drowing List -->
+                            <div class="drowing_list">
+                            	<div class="table_info">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless table-striped">
+                                          <thead>
+                                            <tr>
+                                              {% comment %} <th>Image</th> {% endcomment %}
+                                              <th>File Name</th>
+                                              <th></th>
+                                              <th align="center" class="text-center">Delete</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {% for layer in layers %}
+                                            <tr>
+                                              {% comment %} <td>
+                                              	<img src="{{layer.image.url}}" alt="" class="drowing_image">
+                                              </td> {% endcomment %}
+                                              <td>{{layer}}</td>
+                                              <td align="center"><a href="{{layer.png_image.url}}" download="{{layer.png_image.url}}" class=""><i class="fa fa-download"></i></a></td>
+                                              <td align="center"><a href="{% url 'delete-layer' layer.id %}" class="dl_link"><i class="fa fa-trash"></i></a></td>
+                                            </tr>
+                                            {% empty%}
+                                            <tr>
+                                              <td colspan="3" align="center">
+                                                No layers added yet.
+                                              </td>
+                                            </tr>
+                                            {% endfor %}
+                                          </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+				</div>
+            </div>
+            
+        </div>
+    </div>
+
+<!-- Add New Project Modal -->
+<div class="modal fade modal_info" id="StageModal" tabindex="-1" aria-labelledby="StageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2>Add New Stage</h2>
+        <div class="form_info">
+            <form method="POST" action="{% url 'create-stage' %}">{% csrf_token %}
+                <input type="hidden" id="id_id" name="id" value="">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><img src="{% static 'images/user.svg' %}" alt=""></div>
+                            </div>
+                            {{stage_add_form.name}}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-md-12">
+                        <div class="select_detail">
+                            <i><img src="{% static 'images/user.svg' %}" alt=""></i>
+                            {{stage_add_form.tradie}}
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="select_detail">
+                            <i><img src="{% static 'images/user.svg' %}" alt=""></i>
+                            {{stage_add_form.layer}}
+                        </div>
+                    </div>
+
+                    {% comment %} <div class="form-group col-md-12">
+                        <div class="select_detail">
+                            <i><img src="{% static 'images/suitcase.svg' %}" alt=""></i>
+                        </div>
+                    </div> {% endcomment %}
+                        {{stage_add_form.project}}
+                    
+                    {% comment %} <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><img src="images/calender.svg" alt=""></div>
+                            </div>
+                            {{stage_add_form.plan_date}}
+                        </div>
+                    </div> {% endcomment %}
+                    
+                    <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <div class="custom-control custom-checkbox">
+                                {{stage_add_form.status}}
+                                <label class="custom-control-label" for="id_status">{{stage_add_form.status.label}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-md-12">
+                        <button class="form_btns">Add Stage</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade modal_info delete_modal" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Are you sure to Delete?</h2>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns red my-2" data-dismiss="modal">No</button>    
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns my-2" id="modal-delete-btn">Yes</button>    
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+
+<script src="{% static 'js/jquery-3.4.1.min.js' %}" ></script>
+{% block javascript %}
+<script>
+    $( document ).ready(function() {
+        $("#id_tradie option:first").attr({'disabled':'true','selected':'true'});
+    });
+    $('#id_project').val({{project.id}});
+    $('#id_stage_project').val({{project.id}});
+    $('td').on('click', '.updatestagebutton', function(){
+        let id = this.id
+        let csrf = $("input[name=csrfmiddlewaretoken").val();
+        data = {id: id, csrfmiddlewaretoken: csrf}
+        $.ajax({
+            url: "{% url 'edit-stage' %}",
+            method: "POST",
+            data: data,
+            success: function(data){
+                $('#id_id').val(data.id);
+                $('#id_name.stage_name').val(data.name);
+                $('#id_plan_date').val(data.plan_date);
+                $("#id_tradie option[value='"+data.tradie+"']").attr('selected', 'true'); 
+                $("#id_layer option[value='"+data.layer+"']").attr('selected', 'true'); 
+                //$("#id_project option[value='"+data.project+"']").attr('selected', 'true'); 
+                $('#id_status').prop('checked', data.status); 
+                $('#StageModal .form_btns').html('Update Stage');
+                $('#StageModal h2').html('Update Stage');
+            }
+        });
+
+   });
+   $('#AddStageBtn').on('click', function(){
+        $("#id_id").removeAttr('value');
+        //$("#id_project option").removeAttr('selected');
+        $("#id_tradie option").removeAttr('selected');
+        //$("#id_project").prop("selectedIndex", 0);
+        $("#id_tradie").prop("selectedIndex", 0);
+        $("#id_tradie option:first").attr({'disabled':'true','selected':'true'});
+        $("#id_layer").prop("selectedIndex", 0);
+        $("#id_layer option:first").attr({'disabled':'true','selected':'true'});
+        $('#StageModal .form_btns').html('Add Stage');
+        $('#StageModal h2').html('Add Stage');
+        $('form')[1].reset(); 
+   });
+
+   $('.dl_link').click(function(e){
+        e.preventDefault();
+        del_url = this.href
+        $('#DeleteModal').modal('show');
+
+        $('#modal-delete-btn').click(function() { 
+            window.location.replace(del_url); 
+        });
+    });
+
+    $('#id_png_image').change(function(){
+        //this.form.submit();
+        $('#layer_submit').click();
+    });
+
+
+</script>
+<script>
+
+    function ImagetoPrint(source)
+    {
+        return "<html><head><scri"+"pt>function step1(){\n" +
+                "setTimeout('step2()', 10);}\n" +
+                "function step2(){window.print();window.close()}\n" +
+                "</scri" + "pt></head><body onload='step1()'>\n" +
+                "<div style='text-align:center;'><img style='width:8cm' src='{{logo.url}}' /><br><img style='width:9cm' src='" + source + "' /><br><div><p style='width:8cm;margin:auto;padding:0;'>{{qr_code_text}}</p></div></div></body></html>";
+    }
+
+    function PrintImage(source)
+    {
+        var Pagelink = "about:blank";
+        var pwa = window.open(Pagelink, "_new");
+        pwa.document.open();
+        pwa.document.write(ImagetoPrint(source));
+        pwa.document.close();
+    }
+
+</script>
+{% endblock javascript %}
+{% endblock content %}
+

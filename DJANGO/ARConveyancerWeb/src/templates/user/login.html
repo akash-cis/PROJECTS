@@ -1,0 +1,84 @@
+{% extends 'user-base.html' %}
+{% load static %}
+{% block content %}
+<body class="login_bg">
+
+<div class="login_sec">
+	<div class="container">
+    	<div class="login_inn">
+        	<!-- Logo -->
+            <div class="login_logo"><img src="{% static 'images/logo.png' %}" alt=""></div>
+            <!-- Details -->
+            <div class="details">
+            	<h2>Login</h2>
+                <div class="form_info">
+                	<form method="POST">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            {% for error in form.non_field_errors %}
+                                <div class="alert alert-danger alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                                    <strong>Error:</strong> {{error}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        
+                        {% if form.errors %}
+                            {% for field in form %}
+                            {% if field.errors %}
+                                <div class="alert alert-danger alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                                    <strong>Error:</strong> {{field.errors|striptags}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                                    <strong>Error:</strong> {{message|safe}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                    	<div class="form-row">
+                        	<div class="form-group col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/email.svg' %}" alt=""></div>
+                                    </div>
+                                    {{form.username}}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-12 mb-2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{% static 'images/password.svg' %}" alt=""></div>
+                                    </div>
+                                    {{form.password}}
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text toggle-password"><a><img src="{% static 'images/eye.svg' %}" alt=""></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 text-right">
+                            	<a href="{% url 'password-reset' %}" class="forgot_link">Forgot Password?</a>
+                            </div>
+                            <div class="form-group col-md-12">
+                            	<button type="submit" class="form_btns">Login to Continue</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-group col-md-12">
+                        <div class="acc_signup">Don't Have an Account? <a href="{% url 'register' %}">Sign Up</a></div>
+                    </div>                            
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

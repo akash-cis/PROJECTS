@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Page Content  -->
+    <div id="content" class="">
+    	<div class="dashboard">
+       		{% comment %} <h2 class="global_title">Builder Dashboard</h2>
+            <!-- Dash Blocks -->
+            <div class="dash_blocks">
+            	<div class="row">
+                	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details">
+                            	<h3>{{invoice_count}}</h3>
+                                <small>Total Invoices</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_1.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details">
+                            	<h3>{{paid_invoice_count}}</h3>
+                                <small>Paid Invoices</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_2.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block block_2">
+                            <div class="details">
+                            	<h3>{{unpaid_invoice_count}}</h3>
+                                <small>Unpaid Invoices</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_3.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div> {% endcomment %}
+
+            {% if messages %}
+                <div class="fix_alert">
+                    {% for message in messages %}
+                    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                        {{message}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <!-- List of Tradies -->
+            <div class="trade_list">
+            	<div class="row">
+                	<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                    	<h2 class="global_title">List of Invoices</h2>
+                    </div>
+                </div>
+                
+                <!-- Table Info -->
+                <div class="table_info">
+                    <div class="table-responsive">
+                    	<table class="table table-borderless table-striped">
+                          <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                {% comment %} <th>Status</th> {% endcomment %}
+                                <th>Paid</th>
+                                {% if request.user.is_superuser%}
+                                <th>User</th>
+                                <th>Company</th>
+                                {% endif%}
+                                <th>Pdf</th>
+                                <th>Receipt</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for invoice in object_list %}
+                                <tr>
+                                    <td>{{invoice.tran_id}}</td>
+                                    <td>{{invoice.timestamp.date}}</td>
+                                    <td>$ {{invoice.amount}}</td>
+                                    {% comment %} <td><span class="status 
+                                    {% if invoice.status == 'draft' %}grey
+                                    {% elif invoice.status == 'deleted' %}red
+                                    {% elif invoice.status == 'open' %}blue
+                                    {% elif invoice.status == 'uncollectible' %}red
+                                    {% elif invoice.status == 'void' %}red
+                                    {% elif invoice.status == 'paid' %}green
+                                    {% else %}blue
+                                    {% endif %}">{{invoice.status}}</span></td> {% endcomment %}
+                                    <td><span class="status {% if not invoice.paid %}red{% else %}green{% endif %}">{% if invoice.paid %}Paid{% else %}Unpaid{% endif %}</span></td>
+                                    {% if request.user.is_superuser%}
+                                    <td>{{invoice.user}}</td>
+                                    <td>{{invoice.company}}</td>
+                                    {% endif%}
+                                    <td>
+                                        
+                                        <a class="action_link" {% if invoice.invoice_pdf %}href="{{invoice.invoice_pdf}}" {% endif%}><img src="{% static 'images/pdf_icon.svg' %}" alt=""></a>
+                                        
+                                    </td>
+                                    <td>
+                                        {% comment %} {% if invoice.hosted_invoice_url%} {% endcomment %}
+                                        <a target="new_tab" {% if invoice.hosted_invoice_url %}href="{{invoice.hosted_invoice_url}}" {% endif%}><img src="{% static 'images/receipt.svg' %}" alt=""></a>
+                                        {% comment %} {% endif%} {% endcomment %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-center">
+                                        No Invoices yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pagination Info -->
+                <div class="pagination_info">
+                	<div class="row">
+                    	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 align-self-center">
+                            <p>Showing {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                        </div>
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 text-right">
+                            <ul class="paging_info">
+                                {% if page_obj.has_previous %}
+                                    <li><a href="?page=1">&laquo; first</a></li>
+                                    <li><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                                {% endif %}
+                                    <li><a class="current">{{ page_obj.number }}</a></li>
+                                {% if page_obj.has_next %}
+                                    <li><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                                    <li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Add New Tradie Modal -->
+    {% comment %} <div class="modal fade modal_info" id="AddTradie" tabindex="-1" aria-labelledby="AddTradieLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Add New Tradie</h2>
+                <div class="form_info">
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+    <!-- Delete Modal -->
+    {% comment %} <div class="modal fade modal_info delete_modal" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Are you sure to Delete?</h2>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns red my-2" data-dismiss="modal">No</button>    
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <button class="form_btns my-2" id="modal-delete-btn">Yes</button>    
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+
+<script src="{% static 'js/jquery-3.4.1.min.js' %}" ></script>
+{% comment %} {% block javascript %} {% endcomment %}
+<!--<script>
+    {% comment %} alert({{company.id}}); {% endcomment %}
+    $('#id_company').val({{company.id}});
+    $('td').on('click', '.updatetradiebutton', function(){
+            let id = this.id
+            let csrf = $("input[name=csrfmiddlewaretoken").val();
+            data = {id: id, csrfmiddlewaretoken: csrf}
+            $.ajax({
+                url: "{% url 'edit-tradie-view' %}",
+                method: "POST",
+                data: data,
+                success: function(data){
+                    $('#id_id').val(data.id);
+                    $('#id_name').val(data.name);
+                    $('#id_email').val(data.email);
+                    $('#id_contact').val(data.contact);
+                    $('#id_status').prop('checked', data.status); 
+                    $("#id_company option[value='"+data.company+"']").attr('selected', 'true');  
+                    $('#AddTradie .form_btns').html('Update Tradie');
+                    $('#AddTradie h2').html('Update Tradie');
+                }
+            });
+
+   });
+   $('#AddTradieBtn').on('click', function(){
+        $("#id_id").removeAttr('value');
+        $("#id_company option").removeAttr('selected');
+        $("#id_company").prop("selectedIndex", 0);
+        $('#AddTradie .form_btns').html('Add Tradie');
+        $('#AddTradie h2').html('Add Tradie');
+        $('form')[0].reset(); 
+   });
+    $('.dl_link').click(function(e){
+        e.preventDefault();
+        del_url = this.href
+        $('#DeleteModal').modal('show');
+
+        $('#modal-delete-btn').click(function() { 
+            window.location.replace(del_url); 
+        });
+    });
+
+    $('.alert ul li#errorlist').each(function() {
+    if ($(this).text() == 'Google Must disappear')
+        $(this).text('');
+    });
+
+
+</script>-->
+{% comment %} {% endblock javascript %} {% endcomment %}
+{% endblock content %}
+

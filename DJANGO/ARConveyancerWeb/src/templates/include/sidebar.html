@@ -1,0 +1,34 @@
+    <!-- sidebar -->
+    {% load static %}
+    <div id="sidebar">
+        <div class="sidebar-menu">
+          <ul>
+          {% if request.user.is_superuser %}
+            <li class=" {% if '/user/super-admin/' in request.get_full_path %}active{% endif %}"> <a href="{% url 'super-admin' %}"><i><img src="{% static 'images/sidenar_icon_1.svg' %}" alt=""></i> <span>Super Admin Dashboard</span> </a>
+            <li class=" {% if '/settings/super-admin/' in request.get_full_path %}active{% endif %}"> <a href="{% url 'super-admin-settings' %}"><i><img src="{% static 'images/sidenar_icon_5.svg' %}" alt=""></i> <span>Settings</span> </a> </li>
+            <li class="{% if request.get_full_path == '/payment/invoices/' %}active{% endif %}"> <a href="{% url 'payment-invoices' %}"><i><img src="{% static 'images/sidenar_icon_4.svg' %}" alt=""></i> <span>Payment History</span> </a> </li>
+          {% else %}
+            <li class="{% comment %}sidebar-dropdown{% endcomment %} {% if '/projects/' in request.get_full_path %}active{% endif %}"> <a href="{% url 'list-project' %}"><i><img src="{% static 'images/sidenar_icon_1.svg' %}" alt=""></i> <span>Builders Dashboard</span> </a>
+              {% comment %} <div class="sidebar-submenu">
+                <ul>
+                  <li> <a href="#">Listing One</a> </li>
+                  <li> <a href="#">Listing Two</a> </li>
+                  <li> <a href="#">Listing Tharee</a> </li>
+                </ul>
+              </div> {% endcomment %}
+            </li>
+            <li class="{% if request.get_full_path == '/tradies/list/' %}active{% endif %}"> <a href="{% url 'list-tradie' %}"><i><img src="{% static 'images/sidenar_icon_2.svg' %}" alt=""></i> <span>Tradies List</span> </a></li>
+            {% if request.user.role.role_type == 'builder' %}
+            <li class="{% if request.get_full_path == '/user/builder-admin/' %}active{% endif %}"> <a href="{% url 'builder-admin' %}"><i><img src="{% static 'images/sidenar_icon_3.svg' %}" alt=""></i> <span>Builder Admin</span> </a></li>
+            {% endif %}
+            <li class="{% if request.get_full_path == '/payment/' %}active{% endif %}"> <a href="{% url 'payment' %}"><i><img src="{% static 'images/sidenar_icon_4.svg' %}" alt=""></i> <span>Payment Details</span> </a> </li>
+            <li class="{% if '/payment/invoices/' in request.get_full_path %}active{% endif %}"> <a href="{% url 'payment-invoices' %}"><i><img src="{% static 'images/sidenar_icon_4.svg' %}" alt=""></i> <span>Payment History</span> </a> </li>
+            <li class="{% if request.get_full_path == '/user/account-settings/' %}active{% endif %}"> <a href="{% url 'account-settings' %}"><i><img src="{% static 'images/sidenar_icon_5.svg' %}" alt=""></i> <span>Settings</span> </a> </li>
+          {% endif %}
+            <li> <a href="{% url 'logout' %}" class="logout"><i><img src="{% static 'images/sidenar_icon_6.svg' %}" alt=""></i> <span>Logout</span> </a> </li>
+          </ul>
+        </div>
+        
+        <div class="sidebar_image"><img src="{% static 'images/sidebar_image.svg' %}" alt=""></div>
+        
+    </div>

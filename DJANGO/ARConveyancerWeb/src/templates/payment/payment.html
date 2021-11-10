@@ -1,0 +1,500 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %} 
+
+    <!-- Page Content  -->
+    <div class="fix_alert" id="fix_alert">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                    {{message}} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div id="content" class="">
+        <div class="dashboard">
+            <div class="dash_blocks">
+            	<div class="row">
+                	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 offset-md-2">
+                    	<div class="block">
+                            <div class="details text-center">
+                            	<h3 id="invoice_total_amount">$ {{next_invoice_amount}}</h3>
+                                <small>Next Invoice Amount</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_4.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                	<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    	<div class="block">
+                            <div class="details text-center">
+                            	<h3 id="invoice_total_amount">$ {{invoice_total_amount}}</h3>
+                                <small>Unpaid Invoice Amount</small>
+                            </div>
+                            <i class="icon"><img src="{% static 'images/dash_icon_4.svg' %}" alt=""></i>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    	<div class="payment_sec">
+        	<div class="container">
+            	<div class="tab_info">
+                	<ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Card Payment</a></li>
+                      <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Bank Transfer</a></li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="pay_inn">
+                                <div class="form_info">
+                                    <form id="payment-form" method="post" action="{% url 'payment' %}">{% csrf_token %}
+                                        <div class="form-row">
+                                            {% comment %} <div class="form-group col-md-12">
+                                                <label>Name on Card</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text"><img src="{% static 'images/user.svg' %}" alt=""></div>
+                                                    </div>
+                                                    <input type="text" name="card_holder" class="form-control" placeholder="Enter Name on Card">
+                                                </div>
+                                            </div> {% endcomment %}
+                                            
+                                            <div class="form-group col-md-12">
+                                                <label>Card</label>
+                                                <div id="card"></div>
+                                            </div>
+                
+                                            <div class="form-group col-md-12 mt-2">
+                                                <div class="input-group">
+                                                    <div class="custom-control custom-checkbox mb-0">
+                                                        <input type="checkbox" class="custom-control-input" id="saveCard" name="save_card">
+                                                        <label class="custom-control-label" for="saveCard">Save Card for future payments.</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                            <div id="card-errors"></div>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                        <button type="submit" class="form_btns green my-2" {% if invoice_total_amount == 0 %}disabled='true'{% endif %}>Pay{% if invoice_total_amount > 0 %} ${{invoice_total_amount}}{% endif %}</button>    
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="pay_inn">
+                                <div class="form_info">
+                                    
+                                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard">
+                        <!-- List of Tradies -->
+            <div class="trade_list">
+            	<div class="row">
+                	<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                    	<h2 class="global_title">List of Cards</h2>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 text-right">
+                    	<a href="#" id="AddTradieBtn" class="btn btn-primary" data-toggle="modal" data-target="#AddTradie"><i class="fa fa-plus-circle"></i> Add Card</a>
+                    </div>
+                </div>
+                
+                <!-- Table Info -->
+                <div class="table_info">
+                    <div class="table-responsive">
+                    	<table class="table table-borderless table-striped">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              {% comment %} <th>Card_ID</th> {% endcomment %}
+                              <th>Card</th>
+                              <th>Brand</th>
+                              <th>Expiry</th>
+                              {% comment %} <th>Set Default</th> {% endcomment %}
+                              <th>Pay</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for card in cards %}
+                                    <tr>
+                                    <form id="payment-form" method="post" action="{% url 'payment' %}">{% csrf_token %}
+                                        <td>{{card.0}}<input name="card_id" type="hidden" readonly value="{{card.1}}"></td>
+                                        <td>{{card.3}}</td>
+                                        <td>{{card.2}}</td>
+                                        <td>{{card.4}}</td>
+                                        {% comment %} <td><input type="checkbox" id="set_default{{card.0}}" class="form-check-input" name="set_default"></td> {% endcomment %}
+                                        <td>
+                                        <button class="btn btn-success" type="submit"><i class="fa fa-dollar"></i> Pay with This Card</button></td>
+                                        <td>
+                                        <button class="btn btn-danger" type="submit" name="delete_card"><i class="fa fa-trash"></i> Delete Card</button></td>
+                                    </form>
+                                    </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        No cards yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {% comment %} <div class="trade_list"> {% endcomment %}
+            	{% comment %} <div class="row">
+                	<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                    	<h2 class="global_title">Invoice items</h2>
+                    	<p class="">This items will be added in the next invoice.</p>
+                    </div>
+                </div>
+                <!-- Table Info -->
+                <div class="table_info">
+                    <div class="table-responsive">
+                    	<table class="table table-borderless table-striped">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Title</th>
+                              <th>Date</th>
+                              <th>Amount</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for item in invoice_items %}
+                                    <tr>
+                                        <td>{{item.0}}</td>
+                                        <td>{{item.1}}</td>
+                                        <td>{{item.2}}</td>
+                                        <td>{{item.3}}</td>
+                                    </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        No Invoice yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                </div> {% endcomment %}
+
+
+            	<div class="row">
+                	<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+                    	<h2 class="global_title">Unpaid Invoices</h2>
+                    	{% comment %} <p class="">This items will be added in the next invoice.</p> {% endcomment %}
+                    </div>
+                </div>
+                <!-- Table Info -->
+                <div class="table_info">
+                    <div class="table-responsive">
+                    	<table class="table table-borderless table-striped">
+                          <thead>
+                            <tr>
+                              <th>Index</th>
+                              <th>Id</th>
+                              <th>Created</th>
+                              <th>Amount</th>
+                              <th>Due Date</th>
+                              <th>Paid</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for invoice in invoices %}
+                                    <tr>
+                                        <td>{{invoice.index}}</td>
+                                        <td>{{invoice.id}}</td>
+                                        <td>{{invoice.created}}</td>
+                                        <td>${{invoice.amount_remaining}}</td>
+                                        <td>{{invoice.due_date}}</td>
+                                        <td><span class="status 
+                                        {% if invoice.status == 'draft' %}grey
+                                        {% elif invoice.status == 'deleted' %}red
+                                        {% elif invoice.status == 'open' %}blue
+                                        {% elif invoice.status == 'uncollectible' %}red
+                                        {% elif invoice.status == 'void' %}red
+                                        {% elif invoice.status == 'paid' %}green
+                                        {% else %}blue
+                                        {% endif %}">{{invoice.status}}</span></td>
+                                        <td><span class="status {% if not invoice.paid %}red{% else %}green{% endif %}">{% if invoice.paid %}Paid{% else %}Unpaid{% endif %}</span></td>
+                                    
+                                    </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        No Invoice yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+
+        <!-- Add New Tradie Modal -->
+    <div class="modal fade modal_info" id="AddTradie" tabindex="-1" aria-labelledby="AddTradieLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2>Add New Card</h2>
+                <div class="form_info">
+                    <form id="card-save-form" method="post" action="{% url 'save-card' %}">{% csrf_token %}
+                        <div class="form-row">
+                            
+                            <div class="form-group col-md-12">
+                                <label>Card</label>
+                                <div id="card-save"></div>
+                            </div>
+
+                            <div class="form-group col-md-12 mt-2">
+                            <div id="card-save-errors"></div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="row">
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                                        <button type="submit" class="form_btns green my-2">save</button>    
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/jquery-3.4.1.min.js' %}" ></script>
+<script>
+(function() {
+  'use strict';
+    var stripe = Stripe('pk_test_51JN9rLSELLTVTa8qg7HLf8bB6QcY4Xi6zuDciLRXZtSU85yYLzpkrH930f5LFitZrSkrZXeBpbTHQ5d9J9d2ZjnR00ZJ64Sibb')
+
+    var elements = stripe.elements();
+    var cardElement = elements.create('card', {
+        iconStyle: 'solid',
+        style: {
+        base: {
+            iconColor: '#217DE9',
+            color: '#217DE9',
+            fontWeight: 500,
+            fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+            fontSize: '16px',
+            fontSmoothing: 'antialiased',
+
+            ':-webkit-autofill': {
+            color: '#217DE9',
+            },
+            '::placeholder': {
+            color: '#217DE9',
+            },
+        },
+        invalid: {
+            iconColor: '#ff0000',
+            color: '#ff0000',
+        },
+        },
+    });
+    cardElement.mount('#card');
+
+
+    var card_save_element = stripe.elements();
+    var cardSaveElement = card_save_element.create('card', {
+        iconStyle: 'solid',
+        style: {
+        base: {
+            iconColor: '#217DE9',
+            color: '#217DE9',
+            fontWeight: 500,
+            fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+            fontSize: '16px',
+            fontSmoothing: 'antialiased',
+
+            ':-webkit-autofill': {
+            color: '#217DE9',
+            },
+            '::placeholder': {
+            color: '#217DE9',
+            },
+        },
+        invalid: {
+            iconColor: '#ff0000',
+            color: '#ff0000',
+        },
+        },
+    });
+    cardSaveElement.mount('#card-save');
+
+    //var stripe2 = Stripe('pk_test_51JN9rLSELLTVTa8qg7HLf8bB6QcY4Xi6zuDciLRXZtSU85yYLzpkrH930f5LFitZrSkrZXeBpbTHQ5d9J9d2ZjnR00ZJ64Sibb')
+    //var elements2 = stripe2.elements();
+    //var cardElement = elements2.create('card');
+    //var cardElement = elements2.getElement('card');
+    //cardElement.mount('#card');
+    //var cardNumber = elements2.create('cardNumber');
+    //var cardNumber = elements2.getElement('cardNumber');
+    //cardNumber.mount('#card-number');
+    //var cardExpiry = elements2.create('cardExpiry');
+    //var cardExpiry = elements2.getElement('cardExpiry');
+    //cardExpiry.mount('#card-expiry');
+    //var cardCvc = elements2.create('cardCvc');
+    //var cardCvc = elements2.getElement('cardCvc');
+    //cardCvc.mount('#card-cvc');
+
+// Handle real-time validation errors from the card Element.
+cardElement.addEventListener('change', function(event) {
+    var displayError = document.getElementById('card-errors');
+    if (event.error) {
+    displayError.textContent = event.error.message;
+    } else {
+    displayError.textContent = '';
+    }
+});
+
+cardSaveElement.addEventListener('change', function(event) {
+    var displayError = document.getElementById('card-save-errors');
+    if (event.error) {
+    displayError.textContent = event.error.message;
+    } else {
+    displayError.textContent = '';
+    }
+});
+
+// Create a token or display an error when the form is submitted.
+var form = document.getElementById('payment-form');
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (parseInt(document.getElementById('invoice_total_amount').innerText) == 0) {
+        $('.fix_alert').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">No Amount to be paid.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>')
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove(); 
+            });
+        }, 5000);
+
+        return null;
+    }
+
+    stripe.createToken(cardElement).then(function(result) {
+        if (result.error) {
+            // Inform the customer that there was an error.
+            var errorElement = document.getElementById('card-errors');
+            errorElement.textContent = result.error.message;
+            //$('.fix_alert').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">'+ result.error.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>')
+            //window.setTimeout(function() {
+            //    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            //        $(this).remove(); 
+            //    });
+            //}, 5000);
+        } else {
+        // Send the token to your server.
+        stripeTokenHandler(result.token);
+        }
+    });
+});
+
+var card_save_form = document.getElementById('card-save-form');
+card_save_form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+        stripe.createToken(cardSaveElement).then(function(result) {
+        // Handle result.error or result.source
+        if (result.error) {
+            // Inform the customer that there was an error.
+            var errorElement = document.getElementById('card-save-errors');
+            errorElement.textContent = result.error.message;
+        } else {
+        // Send the token to your server.
+        stripeSaveCardTokenHandler(result.token);
+        }
+    });
+
+});
+
+function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  //form['saveCard'].value = form['saveCard'].checked
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+
+function stripeSaveCardTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('card-save-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  //form['saveCard'].value = form['saveCard'].checked
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+
+function stripeSourceHandler(source) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('card-save-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripe_source');
+  hiddenInput.setAttribute('value', source.id);
+  //form['saveCard'].value = form['saveCard'].checked
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+})();
+</script>
+
+{% block javascript %}
+<script>
+$(document).ready(function(){
+
+
+$('#card iframe').css("padding","20px");
+$('#card-save iframe').css("padding","20px");
+//$('#card-number iframe').css("padding","20px 30px");
+//$('#card-expiry iframe').css("padding","20px 30px");
+//$('#card-cvc iframe').css("padding","20px 30px");
+$('.StripeElement iframe').css("padding","20px");
+});
+</script>
+{% endblock javascript %}
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-section">
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb">Banner</legend>
+            <div class="form-group">
+                {{ form.title.label() }}
+                {{ form.title(class="form-control") }}
+                {% if form.title.errors %}
+                {% for error in form.title.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.image.label() }}
+                {{ form.image(class="form-control-file") }}
+                <p class="small text-muted bold">(1000*1000)</p>
+                {% if form.image.errors %}
+                {% for error in form.image.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+    <!-- FORM HERE -->
+    <!-- Gallery -->
+    <div class="portfolio-item row" id="loaddata">
+        {% if pages %}
+        {% for banner in pages %}
+            <div class="item selfie col-lg-4 col-md-4 mb-4 mb-lg-0">
+                <a href="{{url_for('static', filename='banners/'+banner.image)}}" class="fancylight popup-btn" data-fancybox-group="light"> 
+                    <img
+                    src="{{url_for('static', filename='banners/thumbnail/'+banner.image)}}"
+                    class="w-100 shadow-1-strong rounded mb-4 img-fluid"
+                    alt=""
+                    />
+                </a>
+                <p>{{banner.title}}</p>
+            </div>
+        {% endfor %}
+        {% endif %}
+  </div>
+  <button class="btn btn-info" id="showmore">Show more</button>
+  <!-- Gallery -->
+</div>
+
+{% endblock content %}
