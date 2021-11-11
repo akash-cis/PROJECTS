@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django.contrib.sites',
+    'user',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +132,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.Parent'
 
 
-STRIPE_PUBLIC_KEY = "pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo"
-STRIPE_SECRET_KEY = "sk_test_51JuAWGSHkX5AnUurCfhxo1HO82AW3OyFQxLZcvjufkeCQ36NeUhpcMVDxpwflNNbI1PChUnZ1VJF8Sa4S6DsjJy000pyJTDEp5"
+
+if DEBUG:
+    STRIPE_PUBLIC_KEY = "pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo"
+    STRIPE_SECRET_KEY = "sk_test_51JuAWGSHkX5AnUurCfhxo1HO82AW3OyFQxLZcvjufkeCQ36NeUhpcMVDxpwflNNbI1PChUnZ1VJF8Sa4S6DsjJy000pyJTDEp5"
+    STRIPE_WEBHOOK_SECRET = "whsec_er089hTAmz8qeXYgp7Oe4lSEz9DvoW03"
+else:
+    # add production public key and secret key here.
+    STRIPE_PUBLIC_KEY = "pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo"
+    STRIPE_SECRET_KEY = "sk_test_51JuAWGSHkX5AnUurCfhxo1HO82AW3OyFQxLZcvjufkeCQ36NeUhpcMVDxpwflNNbI1PChUnZ1VJF8Sa4S6DsjJy000pyJTDEp5"
 stripe.api_key = STRIPE_SECRET_KEY
