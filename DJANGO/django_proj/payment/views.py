@@ -4,6 +4,8 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from stripe.api_resources import payment_intent
 
+
+
 # Create your views here.
 @csrf_exempt
 def webhook(request):
@@ -20,6 +22,8 @@ def webhook(request):
     except stripe.error.SignatureVerificationError as e:
         return HttpResponse(status=404)
 
+
+    # CUSTOMER
     if event['type'] == 'customer.created':
         session = event['data']
         print(session)
@@ -33,4 +37,37 @@ def webhook(request):
         # customer_email = session['customer_details']['email']
         # payment_intent = session['payment_intent']
         return HttpResponse(status=200)
-    return HttpResponse(status=300)
+
+
+
+    # SUBSCRIPTION
+    if event['type'] == 'subscription_schedule.aborted':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+    if event['type'] == 'subscription_schedule.cancled':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+    if event['type'] == 'subscription_schedule.created':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+    if event['type'] == 'subscription_schedule.completed':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+    if event['type'] == 'subscription_schedule.expiring':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+    if event['type'] == 'subscription_schedule.released':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+    if event['type'] == 'subscription_schedule.updated':
+        session = event['data']
+        print(session)
+        return HttpResponse(status=200)
+        
+    return HttpResponse(status=200)

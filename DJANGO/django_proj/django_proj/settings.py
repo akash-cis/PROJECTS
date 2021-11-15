@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import stripe
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'django.contrib.sites',
+
+    # third party libraries
+    'djstripe',
+    
+    # custom apps
     'user',
     'payment',
 ]
@@ -58,7 +64,7 @@ ROOT_URLCONF = 'django_proj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,3 +148,12 @@ else:
     STRIPE_PUBLIC_KEY = "pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo"
     STRIPE_SECRET_KEY = "sk_test_51JuAWGSHkX5AnUurCfhxo1HO82AW3OyFQxLZcvjufkeCQ36NeUhpcMVDxpwflNNbI1PChUnZ1VJF8Sa4S6DsjJy000pyJTDEp5"
 stripe.api_key = STRIPE_SECRET_KEY
+
+
+# dj-stripe settings
+STRIPE_TEST_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY", "pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo")
+STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY", "sk_test_51JuAWGSHkX5AnUurCfhxo1HO82AW3OyFQxLZcvjufkeCQ36NeUhpcMVDxpwflNNbI1PChUnZ1VJF8Sa4S6DsjJy000pyJTDEp5")
+STRIPE_LIVE_MODE = False
+DJSTRIPE_WEBHOOK_SECRET = "whsec_er089hTAmz8qeXYgp7Oe4lSEz9DvoW03"
+DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"

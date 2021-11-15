@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy as _
 from .models import History
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
+import djstripe
 
 stripe_key = settings.STRIPE_PUBLIC_KEY
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -32,6 +34,7 @@ class StripeAccount():
         )
         self.user.stripe_id = customer_account["id"]
         self.user.save()
+        djstripe_customer = djstripe.models.Customer.sync_from_stripe_data(customer_account)
         return customer_account
 
     def update(self):
@@ -48,14 +51,42 @@ class StripeAccount():
             name=self.user.get_full_name(),
             phone=self.user.contact
         )
+        djstripe_customer = djstripe.models.Customer.sync_from_stripe_data(customer_account)
         return customer_account
 
     def delete(self):
         try:
             customer_account = stripe.Customer.delete(self.user.stripe_id)
+            djstripe_customer = djstripe.models.Customer.sync_from_stripe_data(customer_account)
             return customer_account['deleted']
         except stripe.error.StripeError as e:
             message = 'Something went wrong while deleting the customer.'
+            return message
+        except Exception as e:
+            return e
+
+    def create_source(self, token):
+        try:
+            card = stripe.Customer.create_source(
+                self.user.stripe_id,
+                source = token
+            )
+            djstripe_card = djstripe.models.Card.sync_from_stripe_data(card)
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while creating the payment source.'
+            return message
+        except Exception as e:
+            return e
+
+    def delete_source(self, source):
+        try:
+            card = stripe.Customer.create_source(
+                self.user.stripe_id,
+                source = source
+            )
+            djstripe_card = djstripe.models.Card.sync_from_stripe_data(card)
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while deleting the payment source.'
             return message
         except Exception as e:
             return e
@@ -66,8 +97,9 @@ class StripePayment():
     this class will handle all sorts of payment business logics for the customer.
     '''
 
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.get("user")
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        # self.user = kwargs.get("user")
         self.token = kwargs.get("token")
         self.save_card = kwargs.get("save_card")
         self.card_id = kwargs.get("card_id")
@@ -121,17 +153,27 @@ class StripePayment():
             print(e)
 
 
-    def create_subscription(self):
-        subscription = stripe.Subscription.create(
-            customer=self.user.stripe_id,
-            items=[
-                {
-                'price': 'price_CBb6IXqvTLXp3f',
-                },
-            ],
-            trial_end=timezone.now().timestamp(),
-        )
-        return subscription
+    # def create_subscription(self, price='price_1Jvwi5SHkX5AnUur9fUAbmMZ', trial_start=timezone.now().timestamp(), trial_end=(timezone.now() + relativedelta(days=7)).timestamp()):
+    def create_subscription(self, price='price_1Jvwi5SHkX5AnUur9fUAbmMZ', trial_period_days=7):
+        try:
+            subscription = stripe.Subscription.create(
+                customer=self.user.stripe_id,
+                items=[
+                    {
+                    'price': price,
+                    },
+                ],
+                trial_period_days=trial_period_days,
+                # trial_start=trial_start,
+                # trial_end=trial_end,
+            )
+            djstripe_card = djstripe.models.Subscription.sync_from_stripe_data(subscription)
+            return subscription
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while deleting the payment source.'
+            return message
+        except Exception as e:
+            return e
     
     def end_subscription(self):
         end_sub = stripe.Subscription.modify('sub_49ty4767H20z6a',
@@ -139,7 +181,7 @@ class StripePayment():
         )
         return end_sub
 
-    def create_price(self, product, unit_amount, currency='usd', recuring='month', ):
+    def create_price(self, product, unit_amount, currency='usd', recuring='month'):
         try:
             price = stripe.Price.create(
                 unit_amount=unit_amount,
@@ -154,6 +196,14 @@ class StripePayment():
 
     def retrive_price(self, price_id):
         price = stripe.Price.retrieve(price_id)
+        return price
+
+    def update_price(self, price_id, unit_amount=None, active=True):
+        p = stripe.Price.retrieve(price_id)
+        price = stripe.Price.modify(
+            price_id,
+            unit_amount=unit_amount if unit_amount else p['unit_amount'],
+        )
         return price
 
     def create_product(self, name):

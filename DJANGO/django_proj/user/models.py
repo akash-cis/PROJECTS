@@ -35,6 +35,8 @@ class ParentManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
+
 class Parent(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255,null=True, blank=True)
     last_name = models.CharField(max_length=255,null=True, blank=True)
@@ -63,6 +65,38 @@ class Parent(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
         
+
+class Membership(models.Model):
+    MEMBERSHIP_CHOICES = (
+        ('Free', 'free'),
+        ('Premium', 'premium'),
+    )
+    slug = models.CharField(max_length=20)
+    type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
+    price = models.PositiveIntegerField()
+    stripe_plan_id = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.type
+
+
+class UserMembership(models.Model):
+    parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+    membership = models.ForeignKey(Membership, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.parent.email
+
+class Subscription(models.Model):
+    user_membership = models.ForeignKey(UserMembership, on_delete=models.CASCADE)
+    # parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+    stripe_sub_id = models.CharField(max_length=30, null=True, blank=True)
+    active = models.BooleanField()
+    start_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.user_membership.parent.email
+
 
 
 class Profile(models.Model):
@@ -94,7 +128,7 @@ class Profile(models.Model):
 
 
 class Student(models.Model):
-    parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Parent, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     date_of_birth = models.DateField()
