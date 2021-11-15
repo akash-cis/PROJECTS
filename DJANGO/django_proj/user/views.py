@@ -22,22 +22,26 @@ class RegistrationView(TemplateView):
     def post(self, request, *args, **kwargs):
         token = request.POST.get('stripeToken',None)
         print(token)
-        parentform = ParentForm(request.POST, prefix='parent_')
-        studentform = StudentForm(request.POST, prefix='student_')
-        if (parentform.is_bound and parentform.is_valid()) and (studentform.is_bound and studentform.is_valid()):
-            print(parentform.cleaned_data['first_name'])
-            print(studentform.cleaned_data['first_name'])
+        if token:
+            parentform = ParentForm(request.POST, prefix='parent_')
+            studentform = StudentForm(request.POST, prefix='student_')
+            if (parentform.is_bound and parentform.is_valid()) and (studentform.is_bound and studentform.is_valid()):
+                print(parentform.cleaned_data['first_name'])
+                print(studentform.cleaned_data['first_name'])
 
-            parent = parentform.save()
-            student = studentform.save(False)
-            student.parent = parent
-            student.save()
-            print(parent.stripe_id)
-            StripeAccount(parent).create_source(token)
-            StripePayment(parent).create_subscription()
-            
-            messages.success(request, 'parent and student created.')
+                parent = parentform.save()
+                student = studentform.save(False)
+                student.parent = parent
+                student.save()
+                print(parent.stripe_id)
+                StripeAccount(parent).create_source(token)
+                StripePayment(parent).create_subscription()
+                
+                messages.success(request, 'parent and student created.')
+            else:
+                messages.warning(request, 'parent and student not created.')
         else:
-            messages.warning(request, 'parent and student not created.')
+            messages.warning(request, 'Please provide payment details.')
+            
 
         return self.render_to_response({'parentform': parentform, 'studentform': studentform})
