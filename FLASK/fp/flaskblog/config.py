@@ -5,5 +5,5 @@ class Config():
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'kunaitrackerapp@gmail.com'
-    MAIL_PASSWORD = '@Ka@Me@Ha@Me@Ha'
+    MAIL_USERNAME = 'akash.crest.testing@gmail.com'
+    MAIL_PASSWORD = 'Crest@testing1'

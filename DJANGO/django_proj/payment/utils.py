@@ -1,12 +1,10 @@
 import stripe
+import djstripe
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy as _
 from .models import History
-from django.utils import timezone
-from dateutil.relativedelta import relativedelta
-import djstripe
 
 stripe_key = settings.STRIPE_PUBLIC_KEY
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -56,14 +54,30 @@ class StripeAccount():
 
     def delete(self):
         try:
-            customer_account = stripe.Customer.delete(self.user.stripe_id)
+            customer_account = stripe.Customer.retrieve(self.user.stripe_id)
             djstripe_customer = djstripe.models.Customer.sync_from_stripe_data(customer_account)
+            customer_account = stripe.Customer.delete(self.user.stripe_id)
+            print('customer_account----------------')
+            print(customer_account)
             return customer_account['deleted']
         except stripe.error.StripeError as e:
             message = 'Something went wrong while deleting the customer.'
             return message
         except Exception as e:
             return e
+
+    @classmethod
+    def retrieve(cls, customer_id):
+        try:
+            customer = stripe.Customer.retrieve(customer_id)
+            print(customer)
+            return customer
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while creating the payment source.'
+            return message
+        except Exception as e:
+            return e
+
 
     def create_source(self, token):
         try:
@@ -72,6 +86,8 @@ class StripeAccount():
                 source = token
             )
             djstripe_card = djstripe.models.Card.sync_from_stripe_data(card)
+            print(card)
+            return card
         except stripe.error.StripeError as e:
             message = 'Something went wrong while creating the payment source.'
             return message
@@ -80,7 +96,7 @@ class StripeAccount():
 
     def delete_source(self, source):
         try:
-            card = stripe.Customer.create_source(
+            card = stripe.Customer.delete_source(
                 self.user.stripe_id,
                 source = source
             )
@@ -108,9 +124,9 @@ class StripePayment():
         self.set_default = kwargs.get("set_default")
         self.price = kwargs.get("price")
 
-    def pay(self):
-        pass
-
+    # ---------------------
+    # checkout handler methods
+    # ---------------------
     @csrf_exempt
     def create_checkout_session(self):
 
@@ -153,7 +169,9 @@ class StripePayment():
             print(e)
 
 
-    # def create_subscription(self, price='price_1Jvwi5SHkX5AnUur9fUAbmMZ', trial_start=timezone.now().timestamp(), trial_end=(timezone.now() + relativedelta(days=7)).timestamp()):
+    # ---------------------
+    # subscription handler methods
+    # ---------------------
     def create_subscription(self, price='price_1Jvwi5SHkX5AnUur9fUAbmMZ', trial_period_days=7):
         try:
             subscription = stripe.Subscription.create(
@@ -164,23 +182,44 @@ class StripePayment():
                     },
                 ],
                 trial_period_days=trial_period_days,
-                # trial_start=trial_start,
-                # trial_end=trial_end,
             )
             djstripe_card = djstripe.models.Subscription.sync_from_stripe_data(subscription)
             return subscription
         except stripe.error.StripeError as e:
-            message = 'Something went wrong while deleting the payment source.'
+            message = 'Something went wrong while creating subscription.'
             return message
         except Exception as e:
             return e
     
-    def end_subscription(self):
-        end_sub = stripe.Subscription.modify('sub_49ty4767H20z6a',
-            trial_end='now',
-        )
-        return end_sub
+    def end_subscription_trial(self, subscription_id):
+        try:
+            end_sub = stripe.Subscription.modify(
+                subscription_id,
+                trial_end='now',
+            )
+            djstripe_card = djstripe.models.Subscription.sync_from_stripe_data(end_sub)
+            return end_sub
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while ending subscription trial.'
+            return message
+        except Exception as e:
+            return e
 
+    def cancel_subscription(self, subscription_id):
+        try:
+            cancel_sub = stripe.Subscription.delete(subscription_id)
+            djstripe_card = djstripe.models.Subscription.sync_from_stripe_data(cancel_sub)
+            return cancel_sub
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while canceling the subscription.'
+            return message
+        except Exception as e:
+            return e
+
+
+    # ---------------------
+    # price handler methods
+    # ---------------------
     def create_price(self, product, unit_amount, currency='usd', recuring='month'):
         try:
             price = stripe.Price.create(
@@ -189,40 +228,126 @@ class StripePayment():
                 recurring={"interval": recuring},
                 product=product,
             )
+            djstripe_card = djstripe.models.Price.sync_from_stripe_data(price)
             return price
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while creating price.'
+            return message
         except Exception as e:
-            print(e)
-            return False
+            return e
 
     def retrive_price(self, price_id):
-        price = stripe.Price.retrieve(price_id)
-        return price
+        try:
+            price = stripe.Price.retrieve(price_id)
+            return price
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while retrieving price.'
+            return message
+        except Exception as e:
+            return e
 
     def update_price(self, price_id, unit_amount=None, active=True):
-        p = stripe.Price.retrieve(price_id)
-        price = stripe.Price.modify(
-            price_id,
-            unit_amount=unit_amount if unit_amount else p['unit_amount'],
-        )
-        return price
+        try:
+            p = stripe.Price.retrieve(price_id)
+            price = stripe.Price.modify(
+                price_id,
+                unit_amount=unit_amount if unit_amount else p['unit_amount'],
+            )
+            djstripe_card = djstripe.models.Price.sync_from_stripe_data(price)
+            return price
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while updating price.'
+            return message
+        except Exception as e:
+            return e
+        
 
+
+    # ---------------------
+    # product handler methods
+    # ---------------------
     def create_product(self, name):
-        product = stripe.Product.create(
-            name=name,
-        )
-        return product
+        try:
+            product = stripe.Product.create(
+                name=name,
+            )
+            djstripe_product = djstripe.models.Product.sync_from_stripe_data(product)
+            return product
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while creating product.'
+            return message
+        except Exception as e:
+            return e
 
     def update_product(self, product_id, name):
-        product = stripe.Product.modify(
-            product_id,
-            name=name,
-        )
-        return product
+        try:
+            product = stripe.Product.modify(
+                product_id,
+                name=name,
+            )
+            djstripe_product = djstripe.models.Product.sync_from_stripe_data(product)
+            return product
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while updating product.'
+            return message
+        except Exception as e:
+            return e
 
     def retrive_product(self, product_id):
-        product = stripe.Product.retrieve(product_id)
-        return product
+        try:
+            product = stripe.Product.retrieve(product_id)
+            djstripe_product = djstripe.models.Product.sync_from_stripe_data(product)
+            return product
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while retrieving product.'
+            return message
+        except Exception as e:
+            return e
 
     def delete_product(self, product_id):
-        product = stripe.Product.delete(product_id)
-        return product
+        try:
+            product = stripe.Product.delete(product_id)
+            djstripe_product = djstripe.models.Product.sync_from_stripe_data(product)
+            return product
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while deleting product.'
+            return message
+        except Exception as e:
+            return e
+
+
+class StripeInfo():
+    '''
+    retrieve information from stripe about the objects.
+    '''
+    
+    def retrieve_customer(self, customer_id):
+        try:
+            customer = stripe.Customer.retrieve(customer_id)
+            print(customer)
+            return customer
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while retrieving customer.'
+            return message
+        except Exception as e:
+            return e
+
+    def retrieve_product(self, product_id):
+        try:
+            product = stripe.Product.retrieve(product_id)
+            return product
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while retrieving product.'
+            return message
+        except Exception as e:
+            return e
+
+    def retrieve_subscription(self, subscription_id):
+        try:
+            subscription = stripe.Subscription.retrieve(subscription_id)
+            return subscription
+        except stripe.error.StripeError as e:
+            message = 'Something went wrong while retrieving subscription.'
+            return message
+        except Exception as e:
+            return e

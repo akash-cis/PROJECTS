@@ -6,6 +6,9 @@ from django.utils.translation import gettext_lazy as _
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from payment.utils import StripeAccount
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
 # Create your models here.
 
 
@@ -48,6 +51,7 @@ class Parent(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     stripe_id = models.CharField(max_length=100, null=True, blank=True)
+    subscription_status = models.CharField(max_length=20, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['contact']
@@ -64,6 +68,24 @@ class Parent(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
+
+    def send_email(self, subject, message, email_template=None):
+        try:
+            message = render_to_string(email_template,{
+                'message': message
+            })
+            mail = send_mail(
+                subject=subject,
+                message=message,
+                html_message=message,
+                from_email = settings.EMAIL_HOST_USER,
+                recipient_list= [self.email,],
+                fail_silently=False,
+            )
+            return mail
+        except Exception as e:
+            print(e)
+            return e
         
 
 class Membership(models.Model):

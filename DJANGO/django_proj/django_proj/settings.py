@@ -134,8 +134,11 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+from django.urls import reverse_lazy as _
 AUTH_USER_MODEL = 'user.Parent'
+LOGIN_REDIRECT_URL = _('index')
+LOGOUT_REDIRECT_URL = _('login')
+LOGIN_URL = _('login')
 
 
 
@@ -157,3 +160,14 @@ STRIPE_LIVE_MODE = False
 DJSTRIPE_WEBHOOK_SECRET = "whsec_er089hTAmz8qeXYgp7Oe4lSEz9DvoW03"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'akash.crest.testing@gmail.com'
+EMAIL_HOST_PASSWORD = 'Crest@testing1'
+DEFAULT_FROM_EMAIL = 'support <akash.crest.testing@gmail.com>'

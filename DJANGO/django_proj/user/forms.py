@@ -17,12 +17,12 @@ class ParentForm(forms.ModelForm):
     password1 = forms.CharField(
         label='Password', 
         widget=forms.PasswordInput(attrs={'placeholder':'Password', 'class': 'form-control',}),
-        help_text=password_validation.password_validators_help_text_html(),
+        # help_text=password_validation.password_validators_help_text_html(),
     )
     password2 = forms.CharField(
         label='Password confirmation', 
         widget=forms.PasswordInput(attrs={'placeholder':'Confirm Password', 'class': 'form-control',}),
-        help_text=_("Enter the same password as before, for verification."),
+        # help_text=_("Enter the same password as before, for verification."),
     )
     class Meta:
         model = Parent
@@ -64,3 +64,5 @@ class StudentForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={'placeholder':'Date Of Birth', 'type':'date', 'class': 'form-control','required':'true',}),
         }
 
+
+# class LoginForm(forms.ModelForm):

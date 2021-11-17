@@ -1,5 +1,5 @@
 import stripe
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from .forms import ParentForm, StudentForm
 from django.contrib import messages
@@ -7,6 +7,8 @@ from django.conf import settings
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from payment.utils import StripeAccount, StripePayment
+from django.contrib.auth.views import LoginView
+from .decorators import subscription_required
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
@@ -16,9 +18,10 @@ class RegistrationView(TemplateView):
     template_name = 'user/register.html'
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('index')
         return self.render_to_response({'parentform': ParentForm(prefix='parent_'), 'studentform': StudentForm(prefix='student_')})
 
-    @method_decorator([transaction.atomic])
     def post(self, request, *args, **kwargs):
         token = request.POST.get('stripeToken',None)
         print(token)
@@ -45,3 +48,12 @@ class RegistrationView(TemplateView):
             
 
         return self.render_to_response({'parentform': parentform, 'studentform': studentform})
+
+
+
+def index(request):
+    return render(request, 'index.html')
+
+@subscription_required
+def lessons(request):
+    return render(request, 'index.html')
