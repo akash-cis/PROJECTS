@@ -52,6 +52,7 @@ class Parent(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     stripe_id = models.CharField(max_length=100, null=True, blank=True)
     subscription_status = models.CharField(max_length=20, null=True, blank=True)
+    subscription_id = models.CharField(max_length=100, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['contact']

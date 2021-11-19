@@ -44,13 +44,32 @@ def webhook(request):
     if event['type'] == 'customer.subscription.created':
         # inform the user that trial will end soon and then will be charged soon.
         session = event['data']
+        print(session)
         obj = session['object']
         customer_id = obj['customer']
+        product_id = obj['plan']['product']
         
         parent = Parent.objects.get(stripe_id=customer_id)
+        parent.subscription_id = obj['id']
         parent.subscription_status = obj['status']
         parent.save()
-        print(session)
+        print('parent has been subscribed to a plan.')
+        try:
+            product = StripeInfo().retrieve_product(product_id)
+            print('obj-------------------------')
+            print(obj)
+            parent = Parent.objects.get(stripe_id=customer_id)
+            print('parent-------------------------')
+            print(parent)
+            parent.subscription_status = obj['status']
+            parent.save()
+            parent.send_email(
+                subject='Your subscription has been cancled!', 
+                message=f'Hello {parent.get_full_name()}, you have been subscribed for "{product["name"]}" successfully.' + 
+                        'enjoy your subscription.',
+                email_template='user/email/simple_mail.html')
+        except Exception as e:
+            print(e)
         return HttpResponse(status=200)
     if event['type'] == 'customer.subscription.trial_will_end':
         # inform the user that trial will end soon and then will be charged soon. occures 3 days before a subscription's trial period.
@@ -83,7 +102,36 @@ def webhook(request):
         obj = session['object']
         prevattrs = session['previous_attributes']
         print('---------------------------------')
-        # print(obj)
+        print('subscription.updated')
+        print(session)
+
+        if 'items' in prevattrs:
+            if (prevattrs['items']['data'][0]['price']['id'] != obj['items']['data'][0]['price']['id']):
+                if obj['status'] in ['trialing', 'active']:
+                    customer_id = obj['customer']
+                    product_id = obj['plan']['product']
+                    product = StripeInfo().retrieve_product(product_id)
+                    parent = Parent.objects.get(stripe_id=customer_id)
+                    parent.subscription_status = obj['status']
+                    parent.save()
+                    parent.send_email(
+                        subject='Your subscription has been changed!', 
+                        message=f'Hello {parent.get_full_name()}, Your subscription plan has been updated to "{product["name"]}".' + 
+                                'enjoy our premium features by logging into the portal.',
+                        email_template='user/email/simple_mail.html')
+                else:
+                    customer_id = obj['customer']
+                    product_id = obj['plan']['product']
+                    product = StripeInfo().retrieve_product(product_id)
+                    parent = Parent.objects.get(stripe_id=customer_id)
+                    parent.subscription_status = obj['status']
+                    parent.save()
+                    parent.send_email(
+                        subject='Something went wrong while changing your subscription!', 
+                        message=f'Hello {parent.get_full_name()}, We tried to change your subscription but some issue occured.' + 
+                                ' please update your payment information to complete the subscription.',
+                        email_template='user/email/simple_mail.html')
+
 
         if 'status' in prevattrs and prevattrs['status'] == 'active' and obj['status'] == 'past_due':
             print(f'A subscription payment has failed! Subscription id: {obj["id"]}')
@@ -116,6 +164,7 @@ def webhook(request):
             print('parent-------------------------')
             print(parent)
             parent.subscription_status = obj['status']
+            parent.subscription_id = None
             parent.save()
             parent.send_email(
                 subject='Your subscription has been cancled!', 

@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'djstripe.middleware.SubscriptionPaymentMiddleware',
 ]
 
 ROOT_URLCONF = 'django_proj.urls'
@@ -128,6 +129,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -171,3 +174,14 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'akash.crest.testing@gmail.com'
 EMAIL_HOST_PASSWORD = 'Crest@testing1'
 DEFAULT_FROM_EMAIL = 'support <akash.crest.testing@gmail.com>'
+
+
+PRODUCT = 'prod_Kb90ru3BxejlQe'
+PRICE = 'price_1Jvwi5SHkX5AnUur9fUAbmMZ'
+TRIAL_PERIOD_DAYS = 7
+
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR : 'danger'
+}

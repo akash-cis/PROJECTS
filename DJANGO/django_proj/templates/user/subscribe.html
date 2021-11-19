@@ -1,0 +1,270 @@
+{% extends 'include/base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'include/navbar.html' %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 mt-5">
+            <!-- <div class="d-flex justify-content-center">
+                <div id="card" style="width: 50%; border: 3px solid grey;padding: 20px;border-radius: 10px;"></div>
+            </div>
+            <div class="d-flex justify-content-center">
+                
+                <div id="card-errors" style="color: red; display: block;"></div>
+            </div> -->
+            <!-- <div class="d-flex justify-content-center">
+                <div class="form-group mt-2">
+                    <div class="input-group">
+                        <div class="custom-control custom-checkbox mb-0">
+                            <input type="checkbox" form="subscribe-form" class="custom-control-input" id="saveCard" name="save_card">
+                            <label class="custom-control-label" for="saveCard">Save Card for future payments.</label>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="col-lg-12">
+            <form id="subscribe-form" class=" d-flex justify-content-center" method="post" action="{% url 'subscribe' %}">{% csrf_token %}
+            {% for price in prices %}
+
+                <input type="hidden" name="price_id" value="{{price.id}}">
+                <div class="card m-2 p-4"  {% if price_id == price.id %}style="background-color: #FFFFCC;box-shadow: 5px 10px 10px #888888;"{% endif %}>
+                    <p class="top mb-1">{{price.product.name}} {% if price_id == price.id %}<span style="font-size: 14px; color: grey;">Active</span>{% endif %}</p>
+                    <div class="d-flex flex-row justify-content-between text-align-center xyz">
+                        <h2><i class="fas fa-euro-sign"></i><span>{% widthratio price.unit_amount 100 1 %}/{{price.recurring.interval}}</span></h2>
+                        <!-- <div class="discount"><span>32% OFF</span></div> -->
+                    </div>
+                    {% if price_id == price.id %}
+                    <div class="card-content mt-4">
+                        <p>You are Currently subscribed to this plan.</p>
+                    </div>
+                    {% else %}
+                    <div class="card-content mt-4">
+                        <p>Once you complete the payment, you can start enjoying all our features.</p>
+                    </div>
+                    {% endif %}
+                    {% if price_id == price.id %}
+                        <!-- <div class="mt-2"> <button class="btn btn-block btn-lg btn-primary" disabled><span>Currently Active</span></button> </div> -->
+                        <div class="mt-2"> <a href="{% url 'cancel-subscription' %}" class="btn btn-block btn-lg btn-danger"><span>Cancel Subscription</span></a> </div>
+                    {% else %}
+                        <div class="mt-2"> <button class="btn btn-block btn-lg btn-primary" type="submit" value="{{price.id}}" name="{% if price_id != price.id and request.user.subscription_id %}upgrade_subscription{% else %}subscribe{% endif %}"><span>{% if price_id != price.id and request.user.subscription_id %}Change Subscription{% else %}Make payment{% endif %}</span><i class="fas fa-arrow-right"></i></button> </div>
+                    {% endif %}
+                    <!-- <div class="form-group col-md-12 mt-3">
+                        <a href="{% url 'index' %}"><i class="fas fa-arrow-left"></i> Go Back</a>
+                    </div> -->
+                </div>
+            {% endfor %}
+            </form>
+        </div>
+        <div class="col-lg-12 mt-5">
+            <div class="container">
+                <form action="" method="post" id="save-card-form">{% csrf_token %}
+                    <div class="d-flex justify-content-center">
+                        <div id="save-card" style="width: 50%; border: 3px solid grey;padding: 20px;border-radius: 10px;"></div>
+                        <button type="submit" class="btn btn-info ml-2" form="save-card-form" name="save_card" value="1">Save</button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div id="save-card-errors" style="color: red; display: block;"></div>
+                    </div>
+                </form>
+            </div>
+            <h1>Cards</h1>
+            <div class="table-responsive">
+                <table class="table table-borderless table-striped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Card</th>
+                      <th>Brand</th>
+                      <th>Expiry</th>
+                      {% comment %} <th>Set Default</th> {% endcomment %}
+                      <th>Pay</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for card in cards %}
+                            <tr>
+                            <form id="payment-form" method="post" action="{% url 'subscribe' %}">{% csrf_token %}
+                                <td>{{card.0}}<input name="card_id" type="hidden" readonly value="{{card.1}}"></td>
+                                <td>{{card.3}}</td>
+                                <td>{{card.2}}</td>
+                                <td>{{card.4}}</td>
+                                {% comment %} <td><input type="checkbox" id="set_default{{card.0}}" class="form-check-input" name="set_default"></td> {% endcomment %}
+                                <td>
+                                <!-- <button class="btn btn-success" type="submit"><i class="fa fa-dollar"></i> Pay with This Card</button>  -->
+                                <input type="radio" name="payment_card" form="subscribe-form" id="payment_card" {% if card.5 %}checked{% endif %} value="{{card.1}}"></td>
+                                <td>
+                                <button class="btn btn-danger" type="submit" name="delete_card"><i class="fa fa-trash"></i></button></td>
+                            </form>
+                            </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                No cards yet.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="col-lg-12 mt-5">
+            <h1>Invoices</h1>
+            <div class="table_info">
+                <div class="table-responsive">
+                    <table class="table table-borderless table-striped">
+                      <thead>
+                        <tr>
+                          <th>Index</th>
+                          <th>Id</th>
+                          <th>Created</th>
+                          <th>Amount</th>
+                          <th>Due Date</th>
+                          <th>Paid</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for invoice in invoices %}
+                                <tr>
+                                    <td>{{invoice.index}}</td>
+                                    <td>{{invoice.id}}</td>
+                                    <td>{{invoice.created}}</td>
+                                    <td>${{invoice.amount_remaining}}</td>
+                                    <td>{{invoice.due_date}}</td>
+                                    <td><span class="status 
+                                    {% if invoice.status == 'draft' %}grey
+                                    {% elif invoice.status == 'deleted' %}red
+                                    {% elif invoice.status == 'open' %}blue
+                                    {% elif invoice.status == 'uncollectible' %}red
+                                    {% elif invoice.status == 'void' %}red
+                                    {% elif invoice.status == 'paid' %}green
+                                    {% else %}blue
+                                    {% endif %}">{{invoice.status}}</span></td>
+                                    <td><span class="status {% if not invoice.paid %}red{% else %}green{% endif %}">{% if invoice.paid %}Paid{% else %}Unpaid{% endif %}</span></td>
+                                
+                                </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    No Invoice yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="table_info"> -->
+        <!-- </div> -->
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+{% block javascript %}
+<script>
+    (function() {
+        'use strict';
+        var stripe = Stripe('pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo')
+        
+        var elements = stripe.elements();
+        var cardElement = elements.create('card',);
+        // cardElement.mount('#card');
+
+        // Save card element
+        var save_elements = stripe.elements();
+        var saveCardElement = save_elements.create('card',);
+        saveCardElement.mount('#save-card');
+        
+        // Handle real-time validation errors from the card Element.
+        cardElement.addEventListener('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+            displayError.textContent = '';
+            }
+        });
+
+        // Handle real-time validation errors from the save card Element.
+        saveCardElement.addEventListener('change', function(event) {
+            var displayError = document.getElementById('save-card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+            displayError.textContent = '';
+            }
+        });
+    
+        
+        // Create a token or display an error when the form is submitted.
+        var form = document.getElementById('subscribe-form');
+        form.addEventListener('submit', function(event) {
+            var getSelectedValue = document.querySelector( 'input[name="payment_card"]:checked');
+            if(getSelectedValue == null) {
+                event.preventDefault();
+                stripe.createToken(cardElement).then(function(result) {
+                    if (result.error) {
+                        // Inform the customer that there was an error.
+                        var errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = result.error.message;
+                    } else {
+                        // Send the token to your server.
+                        stripeTokenHandler(result.token);
+                    }
+                });
+            }
+        });
+
+        var saveCardForm = document.getElementById('save-card-form');
+        saveCardForm.addEventListener('submit', function(event){
+            event.preventDefault();
+
+            stripe.createToken(saveCardElement).then(function(result){
+                if (result.error){
+                    var saveCardErrorElement = document.getElementById('save-card-error');
+                    saveCardErrorElement = result.error.message;
+                }else{
+                    stripeSaveCardTokenHandler(result.token);
+                }
+            })
+        });
+                
+        function stripeSaveCardTokenHandler(token){
+            var form = document.getElementById('save-card-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'save_card');
+            // hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+            form.submit();
+        }
+    
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('subscribe-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            //form['saveCard'].value = form['saveCard'].checked
+            form.appendChild(hiddenInput);
+            
+            // Submit the form
+            form.submit();
+        }
+    
+    })();
+</script>
+{% endblock javascript %}
+{% endblock content %}
