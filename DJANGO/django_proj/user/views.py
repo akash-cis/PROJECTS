@@ -96,8 +96,6 @@ class SubscribeView(View):
         return render(request, 'user/subscribe.html', context)
 
     def post(self, request, *args, **kwargs):
-        context = {}
-
         token = request.POST.get('stripeToken',None)
         card_id = request.POST.get("card_id", None)
         price_id = request.POST.get('price_id')
@@ -135,7 +133,6 @@ class SubscribeView(View):
                     messages.success(request, f'Your subscription has been chagned!')
             except Exception as e:
                 messages.success(request, f'Something went wrong! {e}')
-
             return redirect(_('subscribe'))
 
 
@@ -164,11 +161,4 @@ class SubscribeView(View):
 
 
         return redirect(_('subscribe'))
-        # context["cards"] = StripeData(request.user).cards()
-        # context["prices"] = StripeInfo().list_price()
-        # if request.user.subscription_id:
-        #     subscription = StripeInfo().retrieve_subscription(request.user.subscription_id)
-        #     context["price_id"] = subscription['items']['data'][0]['plan']['id']
-
-        # return render(request, 'user/subscribe.html', context)
 
