@@ -40,11 +40,11 @@
                           <div id="card" style="border: 3px solid grey;padding: 20px;border-radius: 10px;"></div>
                           <div id="card-errors" style="color: red;"></div>
                           </table>
+                          <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body mt-3" value="{% trans 'submit' %}">Register</button>
                           {% if wizard.steps.prev %}
                           <!-- <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button> -->
-                          <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body mt-3" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
+                          <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
                           {% endif %}
-                          <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" value="{% trans 'submit' %}">Register</button>
                       </form>
 
                   </div>

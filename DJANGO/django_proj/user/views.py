@@ -24,9 +24,9 @@ FORMS = [("parent", ParentForm),
          ("student", StudentForm),
          ("payment", PaymentForm)]
 
-TEMPLATES = {"parent": "user/signup.html",
-             "student": "user/signup.html",
-             "payment": "user/signup-payment.html"}
+# TEMPLATES = {"parent": "user/signup.html",
+#              "student": "user/signup.html",
+#              "payment": "user/signup-payment.html"}
 TEMPLATES = {"0": "user/signup.html",
              "1": "user/signup.html",
              "2": "user/signup-payment.html"}
@@ -35,6 +35,12 @@ TEMPLATES = {"0": "user/signup.html",
 class RegistrationWizardView(SessionWizardView):
     # template_name = 'user/signup.html'
     form_list = [ParentForm, StudentForm, PaymentForm]
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('index')
+
+        return super().get(self, request, *args, **kwargs)
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]

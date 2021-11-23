@@ -38,11 +38,11 @@
                                 {% endfor %}
                         {% endif %}
                         </table>
+                        <input type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body mt-3" value="{% trans 'submit' %}"/>
                         {% if wizard.steps.prev %}
                         <!-- <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit" value="{{ wizard.steps.first }}">{% trans "Back" %}</button> -->
                         <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
                         {% endif %}
-                        <input type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" value="{% trans 'submit' %}"/>
                     </form>
 
                   </div>
