@@ -1,0 +1,129 @@
+{% extends 'include/base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% block head %}
+{{ wizard.form.media }}
+{% endblock %}
+    {% include 'include/messages.html' %}
+    <!-- MultiStep Form -->
+    <section class="vh-100 bg-image" style="background-image: url('https://mdbootstrap.com/img/Photos/new-templates/search-box/img4.jpg');">
+        <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+          <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                <div class="card" style="border-radius: 15px;">
+                  <div class="card-body p-5">
+                      <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+                      
+                      <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+                      <form action="" id='register-form' method="post">{% csrf_token %}
+                          <table>
+                          {{ wizard.management_form }}
+                          {% if wizard.form.forms %}
+                              {{ wizard.form.management_form }}
+                              {% for form in wizard.form.forms %}
+                                  {{form}}
+                              {% endfor %}
+                          {% else %}
+                                  {% for field in wizard.form %}
+                                  <div class="form-outline mb-4">
+                                      <!-- <label class="form-label" for="form3Example1cg">{{ field.label_tag }}</label> -->
+                                      {{ field }}
+                                      {{ field.errors }}
+                                      {% if field.help_text %}
+                                      <p class="help">{{ field.help_text|safe }}</p>
+                                      {% endif %}
+                                  </div>
+                                  {% endfor %}
+                          {% endif %}
+                          <div id="card" style="border: 3px solid grey;padding: 20px;border-radius: 10px;"></div>
+                          <div id="card-errors" style="color: red;"></div>
+                          </table>
+                          {% if wizard.steps.prev %}
+                          <!-- <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button> -->
+                          <button name="wizard_goto_step" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body mt-3" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
+                          {% endif %}
+                          <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" value="{% trans 'submit' %}">Register</button>
+                      </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+<script src="https://js.stripe.com/v3/"></script>
+        
+
+{% block javascript %}
+<script>
+    (function() {
+      'use strict';
+        var stripe = Stripe('pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo')
+    
+        var elements = stripe.elements();
+        var cardElement = elements.create('card',{hidePostalCode: true,});
+        cardElement.mount('#card');
+    
+    
+
+
+
+    // Handle real-time validation errors from the card Element.
+    cardElement.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+        displayError.textContent = event.error.message;
+        } else {
+        displayError.textContent = '';
+        }
+    });
+    
+    
+    // Create a token or display an error when the form is submitted.
+    var form = document.getElementById('register-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        // new code +++++++
+        
+        
+        stripe.createToken(cardElement).then(function(result) {
+            if (result.error) {
+                // Inform the customer that there was an error.
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+                //$('.fix_alert').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">'+ result.error.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>')
+                //window.setTimeout(function() {
+                    //    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                    //        $(this).remove(); 
+                    //    });
+                    //}, 5000);
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+            
+    
+    function stripeTokenHandler(token) {
+        // Insert the token ID into the form so it gets submitted to the server
+        // var form = document.getElementById('register-form');
+        var token_field = document.getElementById('id_2-token');
+        alert(token.id)
+        token_field.value = token.id;
+        alert(token_field)
+        
+        // Submit the form
+        form.submit();
+    }
+    
+    })();
+</script>
+{% endblock javascript %}
+
+{% endblock content %}

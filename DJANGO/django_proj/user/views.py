@@ -2,7 +2,9 @@ from django.views.generic.base import View
 import stripe
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
-from .forms import ParentForm, StudentForm
+
+from user.models import Parent
+from .forms import LoginForm, ParentForm, StudentForm, PaymentForm
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -12,9 +14,45 @@ from payment.utils import StripeAccount, StripeData, StripeInfo, StripePayment
 from django.contrib.auth.views import LoginView
 from .decorators import subscription_required
 from django.urls import reverse_lazy as _
+from formtools.wizard.views import SessionWizardView
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
+
+
+FORMS = [("parent", ParentForm),
+         ("student", StudentForm),
+         ("payment", PaymentForm)]
+
+TEMPLATES = {"parent": "user/signup.html",
+             "student": "user/signup.html",
+             "payment": "user/signup-payment.html"}
+TEMPLATES = {"0": "user/signup.html",
+             "1": "user/signup.html",
+             "2": "user/signup-payment.html"}
+
+
+class RegistrationWizardView(SessionWizardView):
+    # template_name = 'user/signup.html'
+    form_list = [ParentForm, StudentForm, PaymentForm]
+
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
+    
+    def done(self, form_list, form_dict, **kwargs):
+        form_data = [form.cleaned_data for form in form_list]
+        print(form_data)
+
+        if (form_list[0].is_bound and form_list[0].is_valid()) and (form_list[1].is_bound and form_list[1].is_valid()) and (form_list[2].is_bound and form_list[2].is_valid()):
+            parent = form_list[0].save()
+            student = form_list[0].save(False)
+            student.parent = parent
+            student.save()
+            StripeAccount(parent).create_source(form_data[2]['token'])
+            StripePayment(parent).create_subscription()
+
+        return render(self.request, 'user/done.html', {'form_data': form_data})
+        # return super().done(form_list, **kwargs)
 
 
 class RegistrationView(TemplateView):
@@ -43,7 +81,8 @@ class RegistrationView(TemplateView):
                 StripeAccount(parent).create_source(token)
                 StripePayment(parent).create_subscription()
                 
-                messages.success(request, 'parent and student created.')
+                # messages.success(request, 'parent and student created.')
+                return {'message': 'created'}
             else:
                 messages.warning(request, 'parent and student not created.')
         else:
@@ -162,3 +201,21 @@ class SubscribeView(View):
 
         return redirect(_('subscribe'))
 
+
+from django.contrib.auth.views import LoginView as DjangoLoginView
+class LoginView(DjangoLoginView):
+    '''User Login View
+        This view is rendered when login/ page is called.
+        It only allows Type of "Builder" or "Master Admin" to login.
+    '''
+    form_class = LoginForm
+    model = Parent
+    template_name = 'user/login.html'
+    success_url = _('index')
+
+    def get(self, request, *args, **kwargs):
+        context = {'form':LoginForm}
+        if request.user.is_authenticated:
+            return redirect(_('index'))
+        return render(request,"user/login.html", context)
+    

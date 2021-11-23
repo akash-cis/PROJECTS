@@ -173,12 +173,12 @@
         var stripe = Stripe('pk_test_51JuAWGSHkX5AnUurQ6NnRLkC0D8WSIYvjSpFVIOHKf7s2qg60u84QFkVV12A8hqxdx4UxGFOYtQxxIdhnCkWm6WX00yFbrxPyo')
         
         var elements = stripe.elements();
-        var cardElement = elements.create('card',);
+        var cardElement = elements.create('card',{hidePostalCode: true,});
         // cardElement.mount('#card');
 
         // Save card element
         var save_elements = stripe.elements();
-        var saveCardElement = save_elements.create('card',);
+        var saveCardElement = save_elements.create('card',{hidePostalCode: true,});
         saveCardElement.mount('#save-card');
         
         // Handle real-time validation errors from the card Element.

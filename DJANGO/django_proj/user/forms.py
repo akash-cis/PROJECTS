@@ -16,24 +16,33 @@ class ParentForm(forms.ModelForm):
     }
     password1 = forms.CharField(
         label='Password', 
-        widget=forms.PasswordInput(attrs={'placeholder':'Password', 'class': 'form-control',}),
+        widget=forms.PasswordInput(attrs={'placeholder':'Password', 'class': 'form-control form-control-lg',}),
         # help_text=password_validation.password_validators_help_text_html(),
     )
     password2 = forms.CharField(
         label='Password confirmation', 
-        widget=forms.PasswordInput(attrs={'placeholder':'Confirm Password', 'class': 'form-control',}),
+        widget=forms.PasswordInput(attrs={'placeholder':'Confirm Password', 'class': 'form-control form-control-lg',}),
         # help_text=_("Enter the same password as before, for verification."),
     )
     class Meta:
         model = Parent
         fields = ['first_name', 'last_name', 'email', 'contact', 'password1', 'password2']
         widgets = {
-            'first_name': forms.TextInput(attrs={'placeholder':'First Name', 'class': 'form-control','required':'true',}),
-            'last_name': forms.TextInput(attrs={'placeholder':'Last Name', 'class': 'form-control','required':'true',}),
-            'email': forms.EmailInput(attrs={'placeholder':'Email', 'class': 'form-control','required':'true',}),
-            'contact': forms.NumberInput(attrs={'placeholder':'Contact', 'class': 'form-control','required':'true',}),
+            'first_name': forms.TextInput(attrs={'placeholder':'First Name', 'class': 'form-control form-control-lg','required':'true',}),
+            'last_name': forms.TextInput(attrs={'placeholder':'Last Name', 'class': 'form-control form-control-lg','required':'true',}),
+            'email': forms.EmailInput(attrs={'placeholder':'Email', 'class': 'form-control form-control-lg','required':'true',}),
+            'contact': forms.NumberInput(attrs={'placeholder':'Contact', 'class': 'form-control form-control-lg','required':'true',}),
         }
 
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise ValidationError(
+                self.error_messages['password_mismatch'],
+                code='password_mismatch',
+            )
+        return password2
     
     def _post_clean(self):
         super()._post_clean()
@@ -59,10 +68,32 @@ class StudentForm(forms.ModelForm):
         model= Student
         fields = ['first_name', 'last_name', 'date_of_birth']
         widgets = {
-            'first_name': forms.TextInput(attrs={'placeholder':'First Name', 'class': 'form-control','required':'true',}),
-            'last_name': forms.TextInput(attrs={'placeholder':'Last Name', 'class': 'form-control','required':'true',}),
-            'date_of_birth': forms.DateInput(attrs={'placeholder':'Date Of Birth', 'type':'date', 'class': 'form-control','required':'true',}),
+            'first_name': forms.TextInput(attrs={'placeholder':'First Name', 'class': 'form-control form-control-lg','required':'true',}),
+            'last_name': forms.TextInput(attrs={'placeholder':'Last Name', 'class': 'form-control form-control-lg','required':'true',}),
+            'date_of_birth': forms.DateInput(attrs={'placeholder':'Date Of Birth', 'type':'date', 'class': 'form-control form-control-lg','required':'true',}),
         }
 
 
-# class LoginForm(forms.ModelForm):
+class PaymentForm(forms.Form):
+    token = forms.CharField(max_length=200, widget=forms.HiddenInput)
+
+
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+
+class LoginForm(AuthenticationForm):
+    '''User Login Form
+        Django form used as login form on login page.
+        fields:
+            username = username of the user
+            password = valid password of the user
+    '''
+    username = UsernameField(
+        widget=forms.TextInput(
+            attrs={'autofocus': True, 'autocomplete': 'email', 'placeholder':'Email', 'class': 'form-control form-control-lg',}
+        )
+    )
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'placeholder':'Password', 'class': 'form-control form-control-lg',}),
+    )
