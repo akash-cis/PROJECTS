@@ -1,0 +1,7 @@
+export { Communication } from "./communication"
+export { Background } from "./background"
+export { Profile } from "./profile"
+export { SkillsAndInterests } from "./skillsAndInterests"
+export { Possessions } from "./possessions"
+export { Accomplishments } from "./accomplishments"
+export { VehicleOfInterest } from "./vehicleOfInterest"

@@ -1,0 +1,4 @@
+Flask-SqlAlchemy==2.4.1
+boto3==1.10.28
+funnelmessages==0.3.1
+Python-dotenv==0.10.3

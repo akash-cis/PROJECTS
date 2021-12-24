@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="25px" viewBox="0 0 24 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons-/-Office-Files-/-XML" stroke="#5E5E5E" stroke-width="1.5">
+            <path d="M3.751,23.2539998 L2.251,23.2539998 C1.42257288,23.2539998 0.751,22.5824271 0.751,21.7539998 L0.751,2.25399985 C0.751,1.42557288 1.42257288,0.753999846 2.251,0.753999846 L12.88,0.753999846 C13.2778937,0.753999846 13.6595565,0.911736763 13.941,1.193 L19.812,7.064 C20.0932632,7.34544347 20.251,7.72710629 20.251,8.125 L20.251,12.7539998 M20.251,8.254 L14.251,8.254 C13.4225729,8.254 12.751,7.58242712 12.751,6.754 L12.751,0.754 M6.751,15.754 L9.751,23.254 M9.751,15.754 L6.751,23.254 M20.251,15.754 L20.251,21.754 C20.251,22.5824271 20.9225729,23.254 21.751,23.254 L23.251,23.254 M17.251,23.254 L17.251,15.754 L15.001,19.504 L12.751,15.754 L12.751,23.254" id="Shape"></path>
+        </g>
+    </g>
+</svg>

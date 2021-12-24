@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filters correctly by 1 week range 1`] = `
+Array [
+  Object {
+    "count": 19,
+    "date": "2020-01-22",
+    "source": "Prospect",
+    "status": "Viewed",
+    "userId": 1,
+    "userName": "Funnel AI Admin",
+  },
+  Object {
+    "count": 2,
+    "date": "2020-01-23",
+    "source": "Prospect",
+    "status": "Saved",
+    "userId": 1,
+    "userName": "Pain",
+  },
+  Object {
+    "count": 10,
+    "date": "2020-01-23",
+    "source": "Prospect",
+    "status": "Viewed",
+    "userId": 1,
+    "userName": "Love",
+  },
+]
+`;
+
+exports[`filters correctly by 30 days range 1`] = `
+Array [
+  Object {
+    "count": 19,
+    "date": "2020-01-22",
+    "source": "Prospect",
+    "status": "Viewed",
+    "userId": 1,
+    "userName": "Funnel AI Admin",
+  },
+  Object {
+    "count": 2,
+    "date": "2020-01-23",
+    "source": "Prospect",
+    "status": "Saved",
+    "userId": 1,
+    "userName": "Pain",
+  },
+  Object {
+    "count": 10,
+    "date": "2020-01-23",
+    "source": "Prospect",
+    "status": "Viewed",
+    "userId": 1,
+    "userName": "Love",
+  },
+  Object {
+    "count": 6,
+    "date": "2020-01-13",
+    "source": "Prospect",
+    "status": "Accepted",
+    "userId": 1,
+    "userName": "Beauty",
+  },
+]
+`;
+
+exports[`maps object to menu 1`] = `
+Array [
+  Array [
+    "TODAY_YESTERDAY",
+    "Today vs yesterday",
+  ],
+  Array [
+    "MONTH_LAST",
+    "This month vs last",
+  ],
+  Array [
+    "WEEK_LAST",
+    "This week vs last",
+  ],
+]
+`;
+
+exports[`shows nothing on zero days 1`] = `Array []`;

@@ -1,0 +1,22 @@
+// import React from "react"
+// import { render, fireEvent, act } from "@testing-library/react"
+// import { FieldsForm } from "../components/personalized-ads/fields"
+
+// const asyncAct = event => act(async () => event)
+
+// test("it validates form", async () => {
+//   const { getByTestId, debug } = render(<FieldsForm />)
+//   const emailInput = getByTestId("name")
+//   const emailControl = emailInput.parentElement.parentElement
+//   const submitButton = getByTestId("submit")
+
+//   // send empty imput
+//   await asyncAct(fireEvent.click(submitButton))
+//   expect(getByTestId("name")).toHaveClass("has-error")
+
+//   // invalid email
+//   await asyncAct(fireEvent.change(emailInput, { target: { value: "yo" } }))
+//   await asyncAct(fireEvent.click(getByTestId("submit")))
+//   expect(emailControl).toHaveClass("has-error")
+//   debug()
+// })

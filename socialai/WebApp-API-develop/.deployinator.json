@@ -1,0 +1,50 @@
+{
+  "version": "0.7.108",
+  "images": [
+    {
+      "name": "webapp-api",
+      "deploy_type": "service",
+      "docker_file": "Dockerfile"
+    },
+    {
+      "name": "response-parser",
+      "deploy_type": "service",
+      "docker_file": "Dockerfile-parser"
+    },
+    {
+      "name": "ad-export-checker",
+      "deploy_type": "task",
+      "docker_file": "Dockerfile-ads-checker"
+    },
+    {
+      "name": "notifications-checker",
+      "deploy_type": "task",
+      "docker_file": "Dockerfile-notifications-checker"
+    },
+    {
+      "name": "message-scheduler",
+      "deploy_type": "service",
+      "docker_file": "Dockerfile-message-scheduler"
+    },
+    {
+      "name": "message-poller",
+      "deploy_type": "service",
+      "docker_file": "Dockerfile-message-poller"
+    },
+    {
+      "name": "reminder-scheduler",
+      "deploy_type": "service",
+      "docker_file": "Dockerfile-reminder-scheduler"
+    },
+    {
+      "name": "reminder-poller",
+      "deploy_type": "service",
+      "docker_file": "Dockerfile-reminder-poller"
+    }
+  ],
+  "stage_clusters": {
+    "stage": "dev-cluster",
+    "prod": "prod-cluster"
+  }
+}
+

@@ -1,0 +1,6 @@
+.env
+.env_sample
+.pytest_cache
+.DS_STORE
+.idea
+.venv*

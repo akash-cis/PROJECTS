@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons-/-Download-PDF" stroke="#5E5E5E" stroke-width="1.5">
+            <path d="M17.25,23.25 C20.5637085,23.25 23.25,20.5637085 23.25,17.25 C23.25,13.9362915 20.5637085,11.25 17.25,11.25 C13.9362915,11.25 11.25,13.9362915 11.25,17.25 C11.25,20.5637085 13.9362915,23.25 17.25,23.25 Z M17.25,14.25 L17.25,20.25 M17.25,20.25 L15,18 M17.25,20.25 L19.5,18 M3.75,6.75 L14.25,6.75 M3.75,11.25 L9.75,11.25 M3.75,15.75 L7.5,15.75 M7.5,20.25 L2.25,20.25 C1.42157288,20.25 0.75,19.5784271 0.75,18.75 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L12.879,0.75 C13.2765472,0.75 13.6578016,0.907981752 13.939,1.189 L16.811,4.061 C17.0920182,4.34219839 17.25,4.72345279 17.25,5.121 L17.25,7.5" id="Shape"></path>
+        </g>
+    </g>
+</svg>

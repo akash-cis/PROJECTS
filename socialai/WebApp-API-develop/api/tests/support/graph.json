@@ -1,0 +1,43 @@
+{
+  "data": {
+    "allPersons": [
+      {
+        "fullName": "Ambrosio Mutation",
+        "lastName": "Mutation",
+        "addresses": [
+          {
+            "line1": "GQLand NW 1234",
+            "person": {
+              "lastName": "Mutation"
+            }
+          }
+        ],
+        "emails": [
+          {
+            "address": "hi@ambros.io"
+          },
+          {
+            "address": null
+          }
+        ]
+      },
+      {
+        "fullName": "Rudolf Query",
+        "lastName": "Query",
+        "addresses": [
+          {
+            "line1": "GraphQL NW 4567",
+            "person": {
+              "lastName": "Query"
+            }
+          }
+        ],
+        "emails": [
+          {
+            "address": "hola@rudolf.co"
+          }
+        ]
+      }
+    ]
+  }
+}

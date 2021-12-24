@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60 (88103) - https://sketch.com -->
+    <title>ConversationsIcon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Navigation,-notifications,-datepicker" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Nav-&amp;-Sidebar" transform="translate(-32.000000, -195.000000)" stroke="#5E5E5E" stroke-width="1.5">
+            <g id="Navigation-/-Sidebar" transform="translate(-1.000000, -1.000000)">
+                <g id="Conversations" transform="translate(1.000000, 188.000000)">
+                    <g id="Icons-/-Navbar-/-Conversations" transform="translate(32.000000, 8.000000)">
+                        <path d="M31,18 C31,14.1340068 27.8659932,11 24,11 L20,11 C16.1340068,11 13,14.1340068 13,18 C13,21.8659932 16.1340068,25 20,25 L21,25 L27,31 L27,24.3013333 C29.4377752,23.1489634 30.9946168,20.696419 31,18 L31,18 Z M9,17 L5,21 L5,14.3013333 C2.04166529,12.9037849 0.449733973,9.64009903 1.16958534,6.44843802 C1.88943671,3.25677701 4.72817664,0.992390538 8,0.999980879 L12,0.999980879 C15.0957996,1.00037928 17.8239771,3.03350044 18.7093333,6" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

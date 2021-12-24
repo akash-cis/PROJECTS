@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: webapp
+  api:
+    build: .
+    image: webapp-api
+    ports:
+      - "5000:5000"

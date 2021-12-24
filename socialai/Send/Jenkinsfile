@@ -1,0 +1,40 @@
+pipeline {
+    agent {
+        docker { 
+            image '380304934815.dkr.ecr.us-east-1.amazonaws.com/node_gatsby:0.3' 
+            registryUrl 'https://380304934815.dkr.ecr.us-east-1.amazonaws.com'
+            registryCredentialsId 'ecr:us-east-1:funnel'
+        }
+    }
+    environment {
+        CI = 'true'
+    }
+    options { 
+        disableConcurrentBuilds() 
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        
+    }
+    stages {
+        
+        stage('Build') {
+            steps {
+               
+                sh 'npm install; npm run build:stage'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm run test'
+            }
+        }
+        stage('Deploy') {
+            when{
+                branch 'master'
+            }
+            steps {
+                sh 'export GATSBY_API_URL=https://webapp-api.stage.funnelai.com/graphql; npm run deploy:stage'
+            }
+        }
+    }
+}

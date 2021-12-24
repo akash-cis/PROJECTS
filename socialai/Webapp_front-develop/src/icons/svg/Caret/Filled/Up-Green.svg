@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="16px" viewBox="0 0 22 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>caret / filled / down</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="analytics---kpis---managers" transform="translate(-577.000000, -349.000000)" fill="#FC5A5A">
+            <g id="Group-17" transform="translate(144.000000, 252.000000)">
+                <g id="Group-9" transform="translate(424.000000, 0.000000)">
+                    <g id="Group-3" transform="translate(0.000000, 89.000000)">
+                        <g id="Icons-/-Caret-/-Filled-/-Down" transform="translate(8.000000, 4.000000)">
+                            <path d="M1.2,5.6 L11.2,18.9333333 C11.5313708,19.3751611 12.1581722,19.4647042 12.6,19.1333333 C12.6758057,19.0764791 12.7431458,19.009139 12.8,18.9333333 L22.8,5.6 C23.1313708,5.1581722 23.0418278,4.53137085 22.6,4.2 C22.4269038,4.07017787 22.2163702,4 22,4 L2,4 C1.44771525,4 1,4.44771525 1,5 C1,5.21637021 1.07017787,5.42690383 1.2,5.6 Z" id="Shape"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

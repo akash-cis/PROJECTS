@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60 (88103) - https://sketch.com -->
+    <title>AnalyticsIcon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Prospects" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="prospects-–-no-prospects-found" transform="translate(-32.000000, -97.000000)" stroke="#5E5E5E" stroke-width="1.5">
+            <g id="navigation-/-sidebar" transform="translate(-1.000000, -1.000000)">
+                <g id="Analytics" transform="translate(1.000000, 90.000000)">
+                    <g id="Icons-/-Navbar-/-Analytics" transform="translate(32.000000, 8.000000)">
+                        <path d="M13.9545455,7 L13.9545455,19 L21.5377273,28.436 C17.3123487,31.6820016 11.4186801,31.8628354 6.99347048,28.8822574 C2.56826081,25.9016794 0.640704486,20.4528983 2.23669228,15.4358836 C3.83268008,10.4188688 8.58102466,7.00045409 13.9545455,7 L13.9545455,7 Z M30.318186,17 C30.3212902,20.6828978 28.5919466,24.1625713 25.6286364,26.436 L25.6286364,26.436 L18.0454545,17 Z M18.0454545,1 C24.8234947,1 30.3181818,6.372583 30.3181818,13 L30.3181818,13 L18.0454545,13 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

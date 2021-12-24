@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="22px" viewBox="0 0 16 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>ice-snowflake</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Conversations" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="conversations-–-line-credit-score" transform="translate(-142.000000, -710.000000)" stroke="#006593">
+            <g id="ice-snowflake" transform="translate(142.000000, 711.000000)">
+                <line x1="8.0008" y1="0.416666667" x2="8.0008" y2="19.5833333" id="Path"></line>
+                <line x1="0.0328" y1="5.20833333" x2="15.968" y2="14.7916667" id="Path"></line>
+                <line x1="0.032" y1="14.7925" x2="15.968" y2="5.20833333" id="Path"></line>
+                <polyline id="Path" points="6.0008 2.08333333 8.0008 4.16666667 10.0008 2.08333333"></polyline>
+                <polyline id="Path" points="0.4176 7.84583333 3.1504 7.08333333 2.4176 4.2375"></polyline>
+                <polyline id="Path" points="2.4176 15.7633333 3.1504 12.9166667 0.4176 12.155"></polyline>
+                <polyline id="Path" points="10.0008 17.9175 8 15.8333333 6.0008 17.9175"></polyline>
+                <polyline id="Path" points="15.5832 12.155 12.8488 12.9175 13.5832 15.7633333"></polyline>
+                <polyline id="Path" points="13.5832 4.2375 12.8496 7.085 15.5832 7.84583333"></polyline>
+                <line x1="6.8008" y1="6.25" x2="9.2008" y2="6.25" id="Path"></line>
+                <line x1="4.2824" y1="9.2075" x2="5.4824" y2="7.04166667" id="Path"></line>
+                <line x1="5.4824" y1="12.9583333" x2="4.2824" y2="10.7933333" id="Path"></line>
+                <line x1="9.2008" y1="13.7508333" x2="6.8008" y2="13.7508333" id="Path"></line>
+                <line x1="11.7184" y1="10.7925" x2="10.5184" y2="12.9583333" id="Path"></line>
+                <line x1="10.5176" y1="7.04166667" x2="11.7184" y2="9.20833333" id="Path"></line>
+            </g>
+        </g>
+    </g>
+</svg>

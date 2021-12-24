@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons-/-Chat-Responses-/-Outline-/-Create-a-Saved-Response" stroke="#5E5E5E" stroke-width="1.5">
+            <path d="M17.25,23.25 C20.5637085,23.25 23.25,20.5637085 23.25,17.25 C23.25,13.9362915 20.5637085,11.25 17.25,11.25 C13.9362915,11.25 11.25,13.9362915 11.25,17.25 C11.25,20.5637085 13.9362915,23.25 17.25,23.25 Z M17.25,14.25 L17.25,20.25 M14.25,17.25 L20.25,17.25 M8.223,19.9 L3.75,23.25 L3.75,18.75 L2.25,18.75 C1.42157288,18.75 0.75,18.0784271 0.75,17.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L21.75,0.75 C22.5784271,0.75 23.25,1.42157288 23.25,2.25 L23.25,9.75" id="Shape"></path>
+        </g>
+    </g>
+</svg>

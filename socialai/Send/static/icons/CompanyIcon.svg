@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons-/-Office" stroke="#5E5E5E" stroke-width="1.5">
+            <path d="M7.598,23.25 L7.598,19.337 M13.467,23.25 L13.467,19.337 M5.641,19.337 L15.424,19.337 M0.75,23.25 L0.75,6.958 C0.77645484,6.40399898 1.24590093,5.97568531 1.8,6 L10.2,6 C10.7540991,5.97568531 11.2235452,6.40399898 11.25,6.958 L11.25,15.75 M8.25,3.5 C8.23176008,3.20728014 7.98085378,2.98405389 7.688,3 L4.313,3 C4.01976639,2.98348345 3.76823511,3.20686825 3.75,3.5 L3.75,6 L8.25,6 L8.25,3.5 Z M5.977,2.706 L6,0.913 M3.75,9.75 L8.25,9.75 M3.75,14.25 L8.25,14.25 M0.75,23.25 L23.25,23.25 M19.5,16.5 C21.5710678,16.5 23.25,14.8210678 23.25,12.75 C23.25,10.6789322 21.5710678,9 19.5,9 C17.4289322,9 15.75,10.6789322 15.75,12.75 C15.75,14.8210678 17.4289322,16.5 19.5,16.5 Z M19.5,23.25 L19.5,13.5" id="Shape"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,42 @@
+export default [
+  {
+    userName: "Funnel AI Admin",
+    date: "2020-01-22",
+    userId: 1,
+    status: "Viewed",
+    count: 19,
+    source: "Prospect",
+  },
+  {
+    userName: "Pain",
+    date: "2020-01-23",
+    userId: 1,
+    status: "Saved",
+    count: 2,
+    source: "Prospect",
+  },
+  {
+    userName: "Love",
+    date: "2020-01-23",
+    userId: 1,
+    status: "Viewed",
+    count: 10,
+    source: "Prospect",
+  },
+  {
+    userName: "Beauty",
+    date: "2020-01-13",
+    userId: 1,
+    status: "Accepted",
+    count: 6,
+    source: "Prospect",
+  },
+  {
+    userName: "Virtue",
+    date: "2019-12-20",
+    userId: 1,
+    status: "Accepted",
+    count: 6,
+    source: "Prospect",
+  },
+]

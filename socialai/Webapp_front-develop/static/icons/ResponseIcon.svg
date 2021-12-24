@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60 (88103) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons-/-Chat-Responses-/-Outline-/-Saved-Response" stroke="#5E5E5E" stroke-width="1.5">
+            <path d="M8.223,19.9 L3.75,23.25 L3.75,18.75 L2.25,18.75 C1.42157288,18.75 0.75,18.0784271 0.75,17.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L21.75,0.75 C22.5784271,0.75 23.25,1.42157288 23.25,2.25 L23.25,8.25 M14.999,18.75 L11.249,18.75 L11.249,22.5 M22.666,19.483 C21.8493458,21.8695693 19.5312758,23.4098471 17.0147033,23.2380921 C14.4981307,23.0663372 12.4108274,21.2253948 11.926,18.75 M19.499,15.75 L23.249,15.75 L23.249,12 M11.832,15.017 C12.6486542,12.6304307 14.9667242,11.0901529 17.4832967,11.2619079 C19.9998693,11.4336628 22.0871726,13.2746052 22.572,15.75" id="Shape"></path>
+        </g>
+    </g>
+</svg>

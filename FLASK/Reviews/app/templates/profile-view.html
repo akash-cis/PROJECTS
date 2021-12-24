@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="content-section">
+  <div class="media">
+    <img class="rounded-circle account-img" src="{{ url_for('static', filename='images/'+user.image) }}">
+    
+    <div class="media-body">
+      <h2 class="account-heading">{{user.username}}</h2>
+      <p class="text-secondary">{{user.email}}</p>
+      <p class="text-secondary">Total Posts : {{posts.total}}</p>
+    </div>
+  </div>
+  <!-- FORM HERE -->
+</div>
+{% if posts %}
+{% for post in posts.items %}
+<article class="media content-section">
+  <div class="media-body">
+  <div class="article-metadata">
+    <a class="mr-2" href="{{ url_for('users.view_profile', username=post.author.username) }}">{{ post.author.username }}</a>
+    <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y %H:%I') }}</small>
+    {% if post.user_id == current_user.id %}
+    <small class="text-muted"><a href="{{ url_for('posts.edit_post', id=post.id) }}">Edit</a></small>
+    <small class="text-muted"><a href="{{ url_for('posts.delete_post', id=post.id) }}" class="text-danger">Delete</a></small>
+    {% endif %}
+  </div>
+  <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+  <p class="article-content">{{ post.content }}</p>
+</div>
+</article>
+{% endfor %}
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    {% if posts.has_prev %}
+    <li class="page-item"><a class="page-link disabled" href="{{posts.prev_num}}">Previous</a></li>
+    {% endif %}
+    {% for pg_no in posts.iter_pages() %}
+    <li class="page-item"><a class="page-link" {% if pg_no and pg_no != posts.page %}href="{{ url_for('users.view_profile', username=user.username, page=pg_no)}}"{% endif %}>{% if pg_no %}{{pg_no}}{%else%}...{% endif %}</a></li>
+    {% endfor %}
+    {% if posts.has_next %}
+    <li class="page-item"><a class="page-link" href="{{posts.next_num}}">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock content %}

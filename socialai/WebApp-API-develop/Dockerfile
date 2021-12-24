@@ -1,0 +1,25 @@
+FROM python:3.8
+
+ARG aws_accesskey_id
+ARG aws_accesskey_secret
+
+WORKDIR /usr/src/app
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip -q awscliv2.zip
+RUN ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+RUN aws --version
+
+RUN export AWS_ACCESS_KEY_ID=${aws_accesskey_id} \
+    && export AWS_SECRET_ACCESS_KEY=${aws_accesskey_secret} \
+    && export AWS_DEFAULT_REGION=us-east-1 \
+    && aws codeartifact login --tool pip --repository pypi-all --domain smai-prod --domain-owner 380304934815
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+ENV FLASK_APP=api
+
+CMD ["flask", "run", "--host=0.0.0.0"]

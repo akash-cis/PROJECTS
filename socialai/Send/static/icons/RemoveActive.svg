@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="24px" viewBox="0 0 22 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60 (88103) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="#FFC0C0" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons-/-Trash" transform="translate(-1.000000, 0.000000)" stroke="#d25454" stroke-width="1.5">
+            <path d="M1.751,6.368 L22.292,2.002 M13.6,0.783 L9.2,1.718 C8.80976144,1.80007931 8.46826845,2.03417094 8.25097916,2.36854875 C8.03368988,2.70292656 7.95849141,3.1100648 8.042,3.5 L8.354,4.968 L15.69,3.408 L15.378,1.941 C15.2958738,1.55161185 15.0623796,1.21081782 14.7289144,0.993634061 C14.3954492,0.776450302 13.9893471,0.700679338 13.6,0.783 Z M10.751,18 L10.751,10.5 M15.251,18 L15.251,10.5 M18.626,6 L21.251,6 L19.866,21.874 C19.8013322,22.6536503 19.148323,23.2526773 18.366,23.2500089 L7.631,23.2500089 C6.85098065,23.2495497 6.20148148,22.6513497 6.137,21.874 L5.1,9.377" id="Shape"></path>
+        </g>
+    </g>
+</svg>

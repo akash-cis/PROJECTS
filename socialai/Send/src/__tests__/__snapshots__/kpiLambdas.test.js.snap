@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`accumulate by date 1`] = `
+Array [
+  Object {
+    "Approved": 6,
+    "Engaged": 6,
+    "Starred": 0,
+    "date": "2019-12-20",
+  },
+  Object {
+    "Approved": 6,
+    "Engaged": 6,
+    "Starred": 0,
+    "date": "2020-01-13",
+  },
+  Object {
+    "Approved": 0,
+    "Engaged": 2,
+    "Starred": 2,
+    "date": "2020-01-23",
+  },
+]
+`;
+
+exports[`filters by name and date 1`] = `
+Array [
+  Object {
+    "count": 19,
+    "date": "2020-01-22",
+    "source": "Prospect",
+    "status": "Viewed",
+    "userId": 1,
+    "userName": "Funnel AI Admin",
+  },
+]
+`;

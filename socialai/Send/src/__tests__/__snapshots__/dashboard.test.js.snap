@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`processes data correctly 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "count": 10,
+        "name": "Model 8",
+      },
+      Object {
+        "count": 4,
+        "name": "Model 9",
+      },
+    ],
+    "model": "Model 8",
+    "name": "Ford",
+    "total": 14,
+  },
+  Object {
+    "children": Array [
+      Object {
+        "count": 5,
+        "name": "Model 8",
+      },
+      Object {
+        "count": 9,
+        "name": "Model 9",
+      },
+      Object {
+        "count": 5,
+        "name": "Model 5",
+      },
+    ],
+    "model": "Model 8",
+    "name": "Tesla",
+    "total": 19,
+  },
+]
+`;

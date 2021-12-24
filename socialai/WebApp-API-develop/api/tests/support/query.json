@@ -1,0 +1,3 @@
+{
+  "query": "query getExportConfigs {↵  getExportConfigs {↵    id↵    userId↵    name↵    email↵    minimumCount↵    frequency↵    count↵    lastExported↵    filters {↵      typeName↵      value↵      type↵    }↵  }↵}↵"
+}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="content-section text-center">
+    <h1 class="text-success">How was our service?</h1>
+    <!-- <a href="https://g.page/r/Cba3ClWhw9c4EAg/review" class="btn btn-outline-success">Good</a> -->
+    <a href="https://www.facebook.com/suratfreestyleclan/reviews/?ref=page_internal" class="btn btn-outline-success">Good</a>
+    <a href="{{ url_for('review.review_view') }}" class="btn btn-outline-danger">Bad</a>
+    </div>
+{% endblock content %}

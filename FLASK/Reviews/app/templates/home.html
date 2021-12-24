@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>{{current_user}}</h1>
+<a href="{{url_for('user.send_review')}}">send review link</a>
+{% endblock content %}

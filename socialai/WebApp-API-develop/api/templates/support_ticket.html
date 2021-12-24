@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>{{APP_TITLE}}</title>
+    </head>
+
+    <body>
+        <table border="0" cellspacing="0" cellpadding="40" align="left" width="640" style="font: normal 18px sans-serif; color: #292929;">
+            <tr>
+                <td>
+                    <div style="width: 640px">
+                        <img src="{{APP_URL}}/images/logo.png" style="width: 60px; height: 60px; vertical-align: middle">
+                        <span style="font-size: 20px; line-height: 60px">A new support ticket has been submitted</span>
+                        <hr />
+                        <h3>Sender Info:</h3>
+                        <p>Name: {{name}}</p>
+                        <p>Company: {{company}}</p>
+                        <p>Email: {{email}}</p>
+                        <hr/>
+                        <h4>Subject:</h4>
+                        <p>{{subject}}</p>
+                        <h4>Message:</h4>
+                        <p>{{message}}</p>
+                    </div>
+                </td>
+            </tr>
+            <tr height="25"></tr>
+        </table>
+    </body>
+</html>
