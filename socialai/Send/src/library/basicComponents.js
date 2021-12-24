@@ -250,6 +250,22 @@ const ContentBody = styled.div`
   margin: ${props => (props.margin ? props.margin : "1em")};
   max-width: 100%;
   overflow: ${props => (props.scroll ? "scroll" : null)};
+
+  &::-webkit-scrollbar {
+    width: 7px;
+    background-color: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 0px grey;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 0 6px grey;
+    background-color: #fcfcfc;
+  }
 `
 
 const LoadingIcon = styled(Icon)`
