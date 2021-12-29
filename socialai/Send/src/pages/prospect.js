@@ -297,6 +297,9 @@ const ProspectPage = ({ authData }) => {
   //   () => localStorage.getItem("filterReminderMessage") || "true"
   // )
 
+  console.log('-----------------userCurrentFilters------------------')
+  console.log(userCurrentFilters)
+
   const accessPayload = authData.signInUserSession.accessToken.payload
 
   const updateMobileResponsive = () => {
@@ -1578,7 +1581,7 @@ const ProspectPage = ({ authData }) => {
               removeMulti={removeMulti}
               removeSelect={removeSelect}
               removeRange={removeRange}
-              refresh={refreshProspects}
+              refresh={onSelectAll}
               refreshingPosts={refreshingPosts || loading}
               clearAll={clearAllFilters}
             />

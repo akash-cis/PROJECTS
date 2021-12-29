@@ -41,10 +41,12 @@ import {
     notification,
     Tooltip,
     message,
+    Slider,
     Select,
     Input,
     DatePicker
 } from "antd"
+const { RangePicker } = DatePicker
 import TextInput from "../../library/textInput"
 import {
     Colors,
@@ -105,28 +107,15 @@ import { presetMenu } from "../../library/preset/PresetMenu"
 import { EditPresetModal } from "../../library/preset/EditPresetModal"
 import { PeriodSelector } from "../../components/life-events/lifeEvents/periodSelector"
 
+import FacebooksIcon from "../../../static/icons/FacebooksIcon.svg"
+import GoogleIcon from "../../../static/icons/GoogleIcon.svg"
+import YelpIcon from "../../../static/icons/YelpIcon.svg"
+
 import StarRatings from 'react-star-ratings'
 
 
 
-// import { parseTimestamp } from "../library/utils"
-// import LocationIcon from "../../static/icons/LocationIcon.svg"
-// import CalendarIcon from "../../static/icons/CalendarIcon.svg"
-// import FilterIcon from "../../static/icons/FilterIcon2.svg"
-// import AddItemIcon1 from "../../static/icons/AddItemIcon1.svg"
-// import RemoveIcon from "../../static/icons/RemoveIcon.svg"
-// import RemoveActive from "../../static/icons/RemoveActive.svg"
-// import StarIcon from "../../static/icons/StarIcon.svg"
-// import StarIconActive from "../../static/icons/StarIconActive.svg"
-// import ChatIcon from "../../static/icons/ChatIconWhite.svg"
-// import ScreenNameModel from "../components/prospect/screenNameModel"
-// import ResponseIcon from "../../static/icons/ResponseIcon.svg"
-// import AirplaneIconWhite from "../../static/icons/AirplaneIconWhite.svg"
-// import CloseIconBlue from "../../static/icons/CloseIconBlue.svg"
-// import CheckIconBlue from "../../static/icons/CheckIconBlue.svg"
-// import AddIcon from "../../static/icons/AddIcon.svg"
 
-// import { PeriodSelector } from "../../components/life-events/lifeEvents/periodSelector"
 const { TabPane } = Tabs
 const { Paragraph } = Typography
 const { confirm } = Modal
@@ -302,7 +291,34 @@ const Container = styled.div`
   @media (max-width: 992px) {
     width: auto;
   }
-`
+  `
+
+const rating = [
+    {
+    value: 0,
+    label: '0',
+    },
+    {
+    value: 20,
+    label: '1',
+    },
+    {
+    value: 37,
+    label: '2',
+    },
+    {
+    value: 100,
+    label: '3',
+    },
+    {
+    value: 100,
+    label: '4',
+    },
+    {
+    value: 100,
+    label: '5',
+    },
+];
 
 const Review = ({ data }) => {
     // const { data: evalTerms } = useQuery(GET_EVAL_TERMS)
@@ -324,6 +340,7 @@ const Review = ({ data }) => {
     cursor: pointer;
     `
 
+
     return (
         <Container id={"prospect-cntr"} scroll>
             <ProspectItem
@@ -342,8 +359,8 @@ const Review = ({ data }) => {
                             e.target.src = "/images/avatar1.png"
                           }}
                         /> */}
-                                        <span><SocialIcon url="https://facebook.com/" style={{ height: "20px", width: "20px" }} /> {data.reviewer.displayName} </span>
-                                        {moment(data.createTime).fromNow()} 
+                                        <span><SVGIcon component={data.platform === 'google' ? GoogleIcon : data.platform === 'facebook' ? FacebooksIcon : YelpIcon} style={{ height: '20px', width: '20px', marginRight: '0.2rem' }} alt="Rating" /> {data.reviewer.displayName} </span>
+                                        {moment(data.createTime).fromNow()}
                                     </InfoText>
                                     <SourceText>
                                         <StarRatings
@@ -422,135 +439,101 @@ export const ReviewsLayout = () => {
         'FOUR': 4,
         'FIVE': 5,
     }
-    const data = [
-        {
-            "name": 'Ajay Koli',
-            "reviewId": '123123123',
-            "reviewer": {
-                "profilePhotoUrl": "/images/avatar1.png",
-                "displayName": "Ajay Koli",
-                "isAnonymous": false
-            },
-            "starRating": Stars["FIVE"],
-            "comment": "I'm working as Software Engineer at Crest Infosystems Pvt. Ltd. and very happy to working with crest. There are lots of opportunities for growth. A best company to work with in surat, Team leaders are wonderful to work with, they has exceptional expertise in leadership, coaching, motivation and very capable. colleague supporting each other, Proper Management - Easily approachable, Well orientated and organized, picnics - outings, work life balance, Good pay structure, half yearly appraisal, 5 day working, after all Work culture is Great.",
-            "createTime": "2021-07-13T15:28:51.818095+00:00",
-            "updateTime": "",
-            "reviewReply": {
-                "name": "Owner",
-                "comment": "Thank you Ajay! It was great working with you as well.",
-                "createTime": "2021-07-13T15:28:51.818095+00:00",
-                "updateTime": "",
-            }
-        },
-        {
-            "name": 'jugal desai',
-            "reviewId": '123123123',
-            "reviewer": {
-                "profilePhotoUrl": "/images/avatar1.png",
-                "displayName": "jugal desai",
-                "isAnonymous": false
-            },
-            "starRating": Stars["FIVE"],
-            "comment": "Best company with very much friendly environment. i have been with this company from almost 4 years. TLs are very supportive and management is always ready to help all the employees.",
-            "createTime": "2021-12-22T07:44:35.067970",
-            "updateTime": "",
-            "reviewReply": {
-                "name": "Owner",
-                "comment": "Thank you Jugal! really appriciated.",
-                "createTime": "2021-12-22T07:44:35.067970",
-                "updateTime": "",
-            }
-        },
-        {
-            "name": 'Chintan Soni',
-            "reviewId": '123123123',
-            "reviewer": {
-                "profilePhotoUrl": "/images/avatar1.png",
-                "displayName": "Chintan Soni",
-                "isAnonymous": false
-            },
-            "starRating": Stars["FOUR"],
-            "comment": "I worked here for almost 2yr, in lots of area it was actually pretty good like salay, environment, activities etc. One thing i stil think they need to work on are on few policies otherwise a very good place to work on",
-            "createTime": "2021-07-13T15:28:51.818095+00:00",
-            "updateTime": "",
-            "reviewReply": {
-                "name": "Owner",
-                "comment": "Thank you Chintan!",
-                "createTime": "2021-07-13T15:28:51.818095+00:00",
-                "updateTime": "",
-            }
-        },
-        {
-            "name": 'Nilesh Gire',
-            "reviewId": '123123123',
-            "reviewer": {
-                "profilePhotoUrl": "/images/avatar1.png",
-                "displayName": "Nilesh Gire",
-                "isAnonymous": false
-            },
-            "starRating": Stars["FIVE"],
-            "comment": "Nice office, well organized and planned for good team collaboration. Good benefits and good work-life balance.",
-            "createTime": "2021-07-13T15:28:51.818095+00:00",
-            "updateTime": "",
-            "reviewReply": null
-            // {
-            //   "name": "Owner",
-            //   "comment": "Thank you Nilesh! It was great working with you as well.",
-            //   "createTime": "A year ago",
-            //     "updateTime": "",
-            // }
-        },
-        {
-            "name": 'MadAddie Marketing',
-            "reviewId": '123123123',
-            "reviewer": {
-                "profilePhotoUrl": "/images/avatar1.png",
-                "displayName": "MadAddie Marketing",
-                "isAnonymous": false
-            },
-            "starRating": Stars["FOUR"],
-            "comment": "We have been working with this company to finalize an Adobe Integration and have finished the project with regards.",
-            "createTime": "2021-07-13T15:28:51.818095+00:00",
-            "updateTime": "",
-            "reviewReply": {
-                "name": "Owner",
-                "comment": "Thank you MadAddie Marketing!",
-                "createTime": "2021-07-13T15:28:51.818095+00:00",
-                "updateTime": "",
-            }
-        },
-        {
-            "name": 'ROHII DESAI',
-            "reviewId": '123123123',
-            "reviewer": {
-                "profilePhotoUrl": "/images/avatar1.png",
-                "displayName": "ROHII DESAI",
-                "isAnonymous": false
-            },
-            "starRating": Stars["THREE"],
-            "comment": "One of the reputed top companies in providing IT services satisfactorily. They are providing best work environment for their employees.",
-            "createTime": "2021-07-13T15:28:51.818095+00:00",
-            "updateTime": "",
-            "reviewReply": null
-        },
-    ]
 
-    const [reviewList, setReviewList] = useState({ dat: data })
+    const [reviewListAll, setReviewListAll] = useState({ dat: null })
+    const [reviewList, setReviewList] = useState({ dat: null })
+    const [radioFilter, setRadioFilter] = useState("All")
+    const [radioDateFilter, setRadioDateFilter] = useState(null)
     const [activeSelect, setActiveSelect] = useState(null)
     const [unrepliedOnly, setUnrepliedOnly] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
     const [visible, setVisible] = useState(true)
-    const [dateFilter, setDateFilter] = useState(new Date())
+    const [dateFilter, setDateFilter] = useState(null)
+    const [rangeDateFilter, setRangeDateFilter] = useState(null)
     const [minRating, setMinRating] = useState(-1)
     const [maxRating, setMaxRating] = useState(-1)
     const [ratingList, setratingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
     const [minRatingList, setMinRatingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
     const [maxRatingList, setMaxRatingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
+    const [allSelected, setAllSelected] = useState([{ "id": 1, "isChecked": false }, { "id": 2, "isChecked": false }, { "id": 3, "isChecked": false },])
+
+    const [allChecked, setAllChecked] = useState(true)
+    const [platformList, setPlatformList] = useState([{id:1, name:'google', checked: true, icon: GoogleIcon},{id:2, name:'facebook', checked: true, icon: FacebooksIcon},{id:3, name:'yelp', checked: true, icon: YelpIcon}])
+    const [userCurrentFilters, setUserCurrentFilters] = useState([])
 
 
+
+    const getData = async() => {
+        let data = await fetch('data.json'
+            , {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        )
+            // .then(function (response) {
+            //     console.log(response)
+            //     return response.json();
+            // })
+            // .then(function (myJson) {
+            //     console.log("myJson----------------------------------------------------------------------------");
+            //     console.log(myJson);
+            //     setReviewList({ dat: myJson })
+            //     return myJson;
+            // });
+        let d = await data.json();
+        // console.log('d---------------');
+        // console.log(d);
+        setReviewListAll({ dat: d })
+        setReviewList({ dat: d })
+    }
+
+
+    const getGoogleReviews = (checked) => {
+        // alert(checked)
+        if (checked) {
+
+            let dt = reviewList.dat.filter(d => {
+                if (d.platform == "google") {
+                    return (d)
+                }
+            })
+            console.log(dt)
+            setReviewList({ dat: dt })
+        }else{
+            let dt = reviewList.dat.filter(d => {
+                if (d.platform != "google") {
+                    return (d)
+                }
+            })
+            console.log(dt)
+            setReviewList({ dat: dt })
+
+        }
+    }
 
 
     const handlePresetMenuClick = async e => {
+        console.log(e)
+        console.log(e.key)
+        // alert(e.key)
+        if (e.key != -1) {
+            let dt = reviewList.dat.filter(d => {
+                if (d.starRating == e.key) {
+                    return (d)
+                }
+            })
+            console.log(dt)
+            setReviewList({ dat: dt })
+
+        } else {
+
+            setReviewList({ dat: data })
+        }
+    }
+
+    const handlePresetDateFilterClick = async e => {
         console.log(e)
         console.log(e.key)
         // alert(e.key)
@@ -582,17 +565,19 @@ export const ReviewsLayout = () => {
         }
         // alert(e.key)
         if (e.key != -1) {
+            getData()
             let dt = reviewList.dat.filter(d => {
                 if (d.starRating >= e.key) {
                     return (d)
                 }
             })
+            console.log('dddddddddddddddddddddddddd------------------')
             console.log(dt)
             setReviewList({ dat: dt })
 
         } else {
-
-            setReviewList({ dat: data })
+            getData()
+            // setReviewList({ dat: data })
         }
     }
 
@@ -601,7 +586,7 @@ export const ReviewsLayout = () => {
         console.log(e.key)
         if (e.key != -2) {
             setMaxRating(e.key)
-            setMinRatingList(ratingList.filter(rating => {
+            setMinRatingList(ratingList?.filter(rating => {
                 if (rating.id <= e.key) {
                     return rating
                 }
@@ -609,31 +594,36 @@ export const ReviewsLayout = () => {
         }
         // alert(e.key)
         if (e.key != -1) {
-            let dt = reviewList.dat.filter(d => {
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-')
+            getData()
+            let dt = reviewList?.dat?.filter(d => {
+                console.log(d.starRating)
                 if (d.starRating <= e.key) {
                     return (d)
                 }
             })
+            console.log('dt-------------------')
             console.log(dt)
             setReviewList({ dat: dt })
 
         } else {
-
-            setReviewList({ dat: data })
+            getData()
         }
     }
 
-    function onChangeUnrepliedOnly(e, checked) {
+    function onChangeUnrepliedOnly(e, checked, groupName) {
 
 
         console.log(e)
+        console.log(groupName)
         console.log(checked)
         setUnrepliedOnly(checked)
+        setRadioFilter(groupName)
         // setHideViewed(false)
         // setAllResultsShown(false)
         if (checked) {
             // refetchSavedPosts()
-            let dt = reviewList.dat.filter(d => {
+            let dt = reviewListAll.dat.filter(d => {
                 if (d.reviewReply == null) {
                     return (d)
                 }
@@ -641,20 +631,46 @@ export const ReviewsLayout = () => {
             // console.log(dt)
             setReviewList({ dat: dt })
         } else {
-            setReviewList({ dat: data })
+            // setReviewList({ dat: data })
+            setReviewList(reviewListAll)
         }
 
-        setActiveSelect('All')    
+        // setActiveSelect('All')
+    }
+
+    function onChangeRadioDate(e, filter, groupName) {
+        let date = null
+        setRadioDateFilter(groupName)
+        // getData()    
+
+        if (filter === 'days'){
+            // alert(moment().subtract(7, filter));
+            date = moment().subtract(7, filter);
+        }else{
+            // alert(moment().subtract(1, filter));
+            date = moment().subtract(1, filter);
+        }
+        let dt = reviewListAll.dat.filter(d => {
+            try {
+                if (moment(d.createTime).utc().isAfter(date)) {
+                    return (d)
+                }
+            }
+            catch {
+                alert('error')
+            }
+        })
+        setReviewList({ dat: dt })
     }
 
     function onChangeDateFilter(date, dateString) {
         // alert(date)
         // alert(dateString)
-        if (!date){
+        if (!date) {
 
             setDateFilter(null)
         }
-        else{
+        else {
             setDateFilter(moment(date))
         }
         console.log("AAAAAAAA", date, dateString)
@@ -674,22 +690,134 @@ export const ReviewsLayout = () => {
             setReviewList({ dat: dt })
         }
         else {
-            setReviewList({ dat: data })
+            getData()
+            // setReviewList({ dat: data })
         }
     }
 
+    const returnMomentDateRange = (start, finish) => {
+        return [moment(start, "YYYY-MM-DD"), moment(finish, "YYYY-MM-DD")];
+    };
+
+    function onChangeRangePickerFilter(date, dateString) {
+        // console.log(date)
+        // console.log(dateString)
+        if (!date[0] && !date[1]) {
+
+            setRangeDateFilter(null)
+        }
+        else {
+            setRangeDateFilter(returnMomentDateRange(date[0], date[1]));
+        }
+        if (dateString[0]) {
+            let dt = reviewListAll.dat.filter(d => {
+                try {
+                    if (moment(d.createTime).utc().isAfter(date[0]) && moment(d.createTime).utc().isBefore(date[1])) {
+                        return (d)
+                    }
+                }
+                catch {
+                    alert('error')
+                }
+            })
+            setReviewList({ dat: dt })
+        }
+        else {
+            setReviewList(reviewListAll)
+        }
+    }
+
+    function onSliderChange(value){
+        // console.log("value")
+        // console.log(value[0])
+        // console.log(value[1])
+        // getData()
+        let dt = reviewListAll?.dat?.filter(d => {
+            // console.log(d.starRating)
+            if (d.starRating >= value[0] && d.starRating <= value[1]) {
+                return (d)
+            }
+        })
+        setReviewList({ dat: dt })
+    }
+    
+    function onClearRadioDate() {
+        setRadioDateFilter(null)
+        setReviewList(reviewListAll)
+        // getData()
+    }
+
     function onClearFilters() {
-        setReviewList({ dat: data })
+        // getData()
+        setReviewList(reviewListAll)
         setDateFilter(null)
+        setRangeDateFilter(null)
         setMinRating(-1)
         setMaxRating(-1)
         setMinRatingList(ratingList)
         setMaxRatingList(ratingList)
     }
 
-    useEffect(() => {
-        setVisible(!isMobile)
-    }, [isMobile])
+    function onSelectAll() {
+        let platlist = []
+        if (allChecked) {
+            setAllChecked(false)
+            platlist = platformList.map(p => {
+                p.checked = false
+                return p
+            })
+            setReviewList({ dat: null })
+        } else {
+            setAllChecked(true)
+            platlist = platformList.map(p => {
+                p.checked = true
+                return p
+            })
+            setReviewList(reviewListAll)
+        }
+        setPlatformList(platlist)
+    }
+    function onPlatformCheckSelect(platform) {
+        // getData()
+        let selectall = true
+        let platlist = platformList.map(p => {
+            if (p.name == platform.name){
+                p.checked = !platform.checked
+                if (p.checked){
+                    let dt = reviewListAll?.dat?.filter(d => {
+                        if (d.platform == platform.name) {
+                            return (d)
+                        }
+                    })
+                    let newdata = dt?.concat(...reviewList?.dat)
+                    setReviewList({ dat: newdata })
+                }
+                else{
+                    let dt = reviewListAll?.dat?.filter(d => {
+                        if (d.platform != platform.name) {
+                            return (d)
+                        }
+                    })
+                    setReviewList({ dat: dt })
+                }
+            }
+            if (!p.checked){
+                selectall = false
+            }
+            return p
+        })
+        setAllChecked(selectall)
+        setPlatformList(platlist)
+    }
+
+
+    const removeFilterText = id => {
+        setUserCurrentFilters(userCurrentFilters.filter(f => f.id !== id))
+    }
+
+    useEffect(()=>{
+        getData()
+      }, [])
 
     const left = css`
     left: -0.2rem;
@@ -710,7 +838,7 @@ export const ReviewsLayout = () => {
 
 
     console.log('reviewList---------------')
-    console.log(reviewList)
+    console.log(platformList.filter(p => console.log(p.id)))
     return (
         <Container id={"prospect-cntr"} scroll>
 
@@ -743,8 +871,8 @@ export const ReviewsLayout = () => {
                             <RadioGroupCustom
                                 key={'groupName'}
                                 buttonStyle="solid"
-                                value={"All"}
-                                // onChange={e => onChangeUnrepliedOnly(e, false)}
+                                value={radioFilter ? radioFilter : "All"}
+                            // onChange={e => onChangeUnrepliedOnly(e, false)}
                             >
                                 <Tooltip
                                     placement="bottom"
@@ -753,8 +881,8 @@ export const ReviewsLayout = () => {
                                 >
                                     <RadioButtonCustom
                                         key={'All'}
-                                        value={-1}
-                                        onClick={e => {onChangeUnrepliedOnly(e, false)}}
+                                        value={"All"}
+                                        onClick={e => { onChangeUnrepliedOnly(e, false, "All") }}
                                     // onClick={e => handleActiveSelect(e, groupName)}
                                     >
                                         All
@@ -766,8 +894,8 @@ export const ReviewsLayout = () => {
                                 >
                                     <RadioButtonCustom
                                         key={'Unreplied'}
-                                        value={1}
-                                    onClick={e => {onChangeUnrepliedOnly(e, true)}}
+                                        value={"Unreplied"}
+                                        onClick={e => { onChangeUnrepliedOnly(e, true, "Unreplied") }}
                                     >
                                         Unreplied
                                     </RadioButtonCustom>
@@ -788,60 +916,96 @@ export const ReviewsLayout = () => {
                                 style={{ maxHeight: "400px", overflow: "auto" }}
                             >
                                 <TabSection>
-                                    <Checkbox
-                                    // checked={selectAll[multiselectsGroup.indexOf(g)]}
-                                    // onChange={() => onSelectAll(g)}
-                                    >
-                                        Select/deselect all
-                                    </Checkbox>
+                                <Checkbox checked={allChecked} onChange={onSelectAll} style={{ marginBottom: '0.2rem', marginLeft: '1px' }}>
+                                    Select/DeselectALL
                                     <br />
-                                    <Checkbox
-                                    // checked={showActiveOnly[index]}
-                                    // onChange={() => onChangeShowActiveOnly(index)}
-                                    >
-                                        <SocialIcon url="https://google.com/" style={{ height: "20px", width: "20px" }} /> Google
-                                    </Checkbox><br />
-                                    <Checkbox checked>
-                                        <SocialIcon url="https://facebook.com/" style={{ height: "20px", width: "20px" }} /> Facebook
-                                    </Checkbox><br />
-                                    <Checkbox>
-                                        <SocialIcon url="https://yelp.com/" style={{ height: "20px", width: "20px" }} /> Yelp
-                                    </Checkbox>
+                                </Checkbox>
+                                {platformList && (
+                                        platformList.map(platform => {
+                                           return <Fragment key={platform.id}>
+                                                <Checkbox checked={platform.checked} onChange={() => onPlatformCheckSelect(platform)} style={{ marginBottom: '0.2rem', marginLeft: '1px', width: '166px' }}>
+                                                    <SVGIcon component={platform.name === 'google' ? GoogleIcon : platform.name === 'facebook' ? FacebooksIcon : YelpIcon} style={{ height: '20px', width: '20px', marginRight: '0.2rem' }} alt="Rating" />
+                                                    {platform.name}
+                                                    <br />
+                                                </Checkbox>
+                                            </Fragment>
+                                        })        
+                                )}
                                 </TabSection>
                                 {/* <Divider /> */}
-                                {/* <TabSection>
-                                  <Fragment key={'1'}>
-                                      <>
-                                        <Checkbox
-                                          checked={false}
-                                          // onChange={() =>
-                                          //   onChangeMulti(g, item.id)
-                                          // }
-                                        >
-                                          value of item
-                                        </Checkbox>
-                                        <br />
-                                      </>
-                                  </Fragment>
-                      </TabSection>
-                      <br /> */}
                             </TabPane>
                         </FilterTab>
                         <FilterTab
                             defaultActiveKey="Makes"
                             tabPosition="top"
                             animated={false}
-                        >
+                            >
 
                             <TabPane
-                                tab={'Filter by date'}
+                                tab={'Filter by date range'}
                                 key={1}
                                 style={{ maxHeight: "400px", overflow: "auto" }}
-                            >
-                                <TabSection>
-                                    <DatePicker style={{ minWidth: "100%" }} placeholder="Select date" value={dateFilter ? moment(dateFilter) : null} onChange={onChangeDateFilter} />
+                                >
+                                <TabSection style={{padding: "0 10px"}}>
+                                    {/* <DatePicker style={{ minWidth: "100%" }} placeholder="Select date" value={dateFilter} onChange={onChangeDateFilter} /> */}
+                                    <RangePicker onChange={onChangeRangePickerFilter} value={rangeDateFilter} />
                                 </TabSection>
-                                <br />
+                                <Divider />
+                                
+
+                                <RadioGroupCustom style={{padding: "0 10px"}}
+                                key={'radioDateFilter'}
+                                buttonStyle="solid"
+                                value={radioDateFilter}
+                            >
+                                <Tooltip
+                                    placement="bottom"
+                                    title={"Week"}
+                                    type={'primary'}
+                                >
+                                    <RadioButtonCustom
+                                        key={'Week'}
+                                        value={"Week"}
+                                        onClick={e => { onChangeRadioDate(e, 'days', "Week") }}
+                                    >
+                                        Week
+                                    </RadioButtonCustom>
+                                </Tooltip>
+                                <Tooltip
+                                    placement="bottom"
+                                    title={"Month"}
+                                >
+                                    <RadioButtonCustom
+                                        key={'Month'}
+                                        value={"Month"}
+                                        onClick={e => { onChangeRadioDate(e, 'months', "Month") }}
+                                    >
+                                        Month
+                                    </RadioButtonCustom>
+                                </Tooltip>
+                                <Tooltip
+                                    placement="bottom"
+                                    title={"Year"}
+                                >
+                                    <RadioButtonCustom
+                                        key={'Year'}
+                                        value={"Year"}
+                                        onClick={e => { onChangeRadioDate(e, 'years', "Year") }}
+                                    >
+                                        Year
+                                    </RadioButtonCustom>
+                                </Tooltip>
+                                {radioDateFilter != null && (
+                                    <TooltipButton
+                                    tooltip="Remove"
+                                    shape="circle"
+                                    onClick={onClearRadioDate}
+                                    alt="Remove"
+                                    component={RemoveIcon}
+
+                                    />
+                                )}
+                            </RadioGroupCustom>
                             </TabPane>
                         </FilterTab>
                         <FilterTab
@@ -857,21 +1021,21 @@ export const ReviewsLayout = () => {
                             >
                                 <TabSection>
                                     {/* <ButtonGroupCustom size={2}>
-                          <Dropdown
-                            overlay={presetMenu(
-                              [{'id': -1, 'name': 'All'},{'id': 0, 'name': 'Not specified'},{'id': 1, 'name': '1'},{'id': 2, 'name': '2'},{'id': 3, 'name': '3'},{'id': 4, 'name': '4'},{'id': 5, 'name': '5'},],
-                              handlePresetMenuClick
-                            )}
-                          >
-                            <ButtonCustom
-                              style={{ marginLeft: "-1px" }}
-                            >
-                              {`Select rating`}
-                              <SVGIcon component={StarIcon} alt="Rating" />
-                            </ButtonCustom>
-                          </Dropdown>
-                        </ButtonGroupCustom> */}
-                                    <ButtonGroupCustom size={2} style={{ display: "flex", justifyContent: "center" }}>
+                                        <Dropdown
+                                            overlay={presetMenu(
+                                            [{'id': -1, 'name': 'All'},{'id': 0, 'name': 'Not specified'},{'id': 1, 'name': '1'},{'id': 2, 'name': '2'},{'id': 3, 'name': '3'},{'id': 4, 'name': '4'},{'id': 5, 'name': '5'},],
+                                            handlePresetMenuClick
+                                            )}
+                                        >
+                                            <ButtonCustom
+                                            style={{ marginLeft: "-1px" }}
+                                            >
+                                            {`Select rating`}
+                                            <SVGIcon component={StarIcon} alt="Rating" />
+                                            </ButtonCustom>
+                                        </Dropdown>
+                                    </ButtonGroupCustom> */}
+                                    {/* <ButtonGroupCustom size={2} style={{ display: "flex", justifyContent: "center" }}>
                                         <ContainerNavigation >
 
                                             <Dropdown
@@ -885,9 +1049,6 @@ export const ReviewsLayout = () => {
                                                     {minRating == -1 ? `Min` : minRating}
                                                     <Icon type="down" />
                                                 </ButtonCustom>
-                                                {/* <Button>
-                                    {`Filter by Stars`} <Icon type="down" />
-                                    </Button> */}
                                             </Dropdown>
                                             <Dropdown
                                                 overlay={presetMenu(
@@ -900,13 +1061,11 @@ export const ReviewsLayout = () => {
                                                     {maxRating == -1 ? `Max` : maxRating}
                                                     <Icon type="down" />
                                                 </ButtonCustom>
-                                                {/* <Button>
-                                    {`Filter by Stars`} <Icon type="down" />
-                                    </Button> */}
                                             </Dropdown>
                                         </ContainerNavigation>
 
-                                    </ButtonGroupCustom>
+                                    </ButtonGroupCustom> */}
+                                    <Slider  marks={rating} range step={1}  defaultValue={[0,5]}    min={0} max={5} onChange={onSliderChange} style={{width: '90%'}}/>
                                 </TabSection>
                             </TabPane>
                         </FilterTab>
@@ -924,14 +1083,27 @@ export const ReviewsLayout = () => {
                 )}
                 <ContentBody scroll style={{ maxHeight: "80vh", overflowX: "hidden" }}>
 
-                    {/* <InfoText style={{ flexGrow: 1.8, minHeight: 24 }}>
-                Info text
-              </InfoText> */}
-                    {
+                {true && (
+                    <FilterBreadcrumbs
+                    userCurrentFilters={[{id: "17995", setType: "GENERAL", type: "Range", typeName: "Range", value: "2 Weeks"},]}
+                    removeText={removeFilterText}
+                    removeMulti={removeFilterText}
+                    removeSelect={removeFilterText}
+                    removeRange={removeFilterText}
+                    refresh={onClearFilters}
+                    refreshingPosts={false}
+                    clearAll={onClearFilters}
+                    />
+                )}
+
+                    {reviewList.dat && (
                         reviewList.dat.map((dat, i) => {
                             return (<Review data={dat} path="/" />)
                         })
-                    }
+                    )}
+                    {!reviewList.dat && (
+                        <h1>No Reviews Found!</h1>
+                    )}
                 </ContentBody>
             </Content>
 

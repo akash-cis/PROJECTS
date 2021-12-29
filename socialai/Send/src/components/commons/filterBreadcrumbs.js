@@ -38,6 +38,7 @@ const FilterBreadcrumbs = ({
   refreshingPosts,
   clearAll,
 }) => {
+  console.log(userCurrentFilters)
   const [breadcrumbs, setBreadcrumbs] = useState({})
   const [pendingUpdate, setPendingUpdate] = useState(false)
   const [filtersSaved, setFiltersSaved] = useState(false)
