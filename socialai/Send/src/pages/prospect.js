@@ -1581,7 +1581,7 @@ const ProspectPage = ({ authData }) => {
               removeMulti={removeMulti}
               removeSelect={removeSelect}
               removeRange={removeRange}
-              refresh={onSelectAll}
+              refresh={refreshProspects}
               refreshingPosts={refreshingPosts || loading}
               clearAll={clearAllFilters}
             />

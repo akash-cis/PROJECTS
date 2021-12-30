@@ -151,8 +151,8 @@ const AuthenticatorProvider = props => {
       userAccounts: allUserAccounts.sort((a, b) => (a.name > b.name ? 1 : -1)),
     }
     user = userTemp
-    console.log('-------------------')
-    console.log(user)
+    // console.log('-------------------')
+    // console.log(user)
     setUser(user)
   }
 

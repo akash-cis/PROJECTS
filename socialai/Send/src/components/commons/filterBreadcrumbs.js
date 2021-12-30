@@ -34,11 +34,12 @@ const FilterBreadcrumbs = ({
   removeMulti,
   removeSelect,
   removeRange,
+  removeDate=null,
+  removeDateTimeline=null,
   refresh,
   refreshingPosts,
   clearAll,
 }) => {
-  console.log(userCurrentFilters)
   const [breadcrumbs, setBreadcrumbs] = useState({})
   const [pendingUpdate, setPendingUpdate] = useState(false)
   const [filtersSaved, setFiltersSaved] = useState(false)
@@ -53,6 +54,16 @@ const FilterBreadcrumbs = ({
       } else if (filter.type === "Select") {
         removeSelect(filter)
       } else if (filter.type === "Range") {
+        removeRange(filter)
+      } else if (filter.type === "Replies") {
+        removeSelect(filter)
+      } else if (filter.type === "Platforms") {
+        removeMulti(filter)
+      } else if (filter.type === "Date" && filter.typeName ==="Date Range") {
+        removeDate(filter)
+      } else if (filter.type === "Date" && filter.typeName ==="Date Timeline") {
+        removeDateTimeline(filter)
+      } else if (filter.type === "Review") {
         removeRange(filter)
       }
       removeBreadcrumb(filter)
@@ -112,7 +123,7 @@ const FilterBreadcrumbs = ({
       refresh()
     }
   }, [userCurrentFilters])
-
+  
   return (
     <div
       style={

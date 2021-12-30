@@ -293,52 +293,35 @@ const Container = styled.div`
   }
   `
 
-const rating = [
-    {
-    value: 0,
-    label: '0',
-    },
-    {
-    value: 20,
-    label: '1',
-    },
-    {
-    value: 37,
-    label: '2',
-    },
-    {
-    value: 100,
-    label: '3',
-    },
-    {
-    value: 100,
-    label: '4',
-    },
-    {
-    value: 100,
-    label: '5',
-    },
-];
+const left = css`
+  left: -0.2rem;
+  padding-left: 0.5rem;
+  `
+const SidebarArrow = styled.div`
+  position: absolute;
+  padding: 10px 5px;
+  top: 50%;
+  ${props => props.right && "right: -0.2rem"};
+  ${props => props.left && left};
+  background-color: #fff;
+  border: 1px solid #eeeef1;
+  border-radius: 4px;
+  z-index: 1;
+  cursor: pointer;
+  `
+
+const rating = {
+    0: '0',
+    1: '1',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+}
 
 const Review = ({ data }) => {
     // const { data: evalTerms } = useQuery(GET_EVAL_TERMS)
 
-    const left = css`
-    left: -0.2rem;
-    padding-left: 0.5rem;
-    `
-    const SidebarArrow = styled.div`
-    position: absolute;
-    padding: 10px 5px;
-    top: 50%;
-    ${props => props.right && "right: -0.2rem"};
-    ${props => props.left && left};
-    background-color: #fff;
-    border: 1px solid #eeeef1;
-    border-radius: 4px;
-    z-index: 1;
-    cursor: pointer;
-    `
 
 
     return (
@@ -412,7 +395,7 @@ const Review = ({ data }) => {
                                         <TooltipButton
                                             tooltip="Respond"
                                             type={"primary"}
-                                            shape="square"
+                                            // shape="square"
                                             component={ChatIcon}
                                             alt="Chat"
                                             onClick={() => {
@@ -444,26 +427,32 @@ export const ReviewsLayout = () => {
     const [reviewList, setReviewList] = useState({ dat: null })
     const [radioFilter, setRadioFilter] = useState("All")
     const [radioDateFilter, setRadioDateFilter] = useState(null)
+    const [visible, setVisible] = useState(true)
+    const [sliderValue, setSliderValue] = useState([0, 5])
+    const [rangeDateFilter, setRangeDateFilter] = useState(null)
+    const [ratingList, setratingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
+    const [allChecked, setAllChecked] = useState(true)
+    const [platformList, setPlatformList] = useState([{ id: 1, name: 'google', checked: true, icon: GoogleIcon }, { id: 2, name: 'facebook', checked: true, icon: FacebooksIcon }, { id: 3, name: 'yelp', checked: true, icon: YelpIcon }])
+    const [userCurrentFilters, setUserCurrentFilters] = useState([])
+    const [refreshingPosts, setRefreshingPosts] = useState(false)
+
+    // not in use
     const [activeSelect, setActiveSelect] = useState(null)
     const [unrepliedOnly, setUnrepliedOnly] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
-    const [visible, setVisible] = useState(true)
     const [dateFilter, setDateFilter] = useState(null)
-    const [rangeDateFilter, setRangeDateFilter] = useState(null)
     const [minRating, setMinRating] = useState(-1)
     const [maxRating, setMaxRating] = useState(-1)
-    const [ratingList, setratingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
     const [minRatingList, setMinRatingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
     const [maxRatingList, setMaxRatingList] = useState([{ 'id': -1, 'name': 'Clear' }, { 'id': 1, 'name': '1' }, { 'id': 2, 'name': '2' }, { 'id': 3, 'name': '3' }, { 'id': 4, 'name': '4' }, { 'id': 5, 'name': '5' },])
     const [allSelected, setAllSelected] = useState([{ "id": 1, "isChecked": false }, { "id": 2, "isChecked": false }, { "id": 3, "isChecked": false },])
-
-    const [allChecked, setAllChecked] = useState(true)
-    const [platformList, setPlatformList] = useState([{id:1, name:'google', checked: true, icon: GoogleIcon},{id:2, name:'facebook', checked: true, icon: FacebooksIcon},{id:3, name:'yelp', checked: true, icon: YelpIcon}])
-    const [userCurrentFilters, setUserCurrentFilters] = useState([])
+    const [fetchData, setFetchData] = useState(false)
 
 
 
-    const getData = async() => {
+
+    const getData = async () => {
+        setRefreshingPosts(true)
         let data = await fetch('data.json'
             , {
                 headers: {
@@ -472,26 +461,25 @@ export const ReviewsLayout = () => {
                 }
             }
         )
-            // .then(function (response) {
-            //     console.log(response)
-            //     return response.json();
-            // })
-            // .then(function (myJson) {
-            //     console.log("myJson----------------------------------------------------------------------------");
-            //     console.log(myJson);
-            //     setReviewList({ dat: myJson })
-            //     return myJson;
-            // });
+        // .then(function (response) {
+        //     console.log(response)
+        //     return response.json();
+        // })
+        // .then(function (myJson) {
+        //     console.log("myJson----------------------------------------------------------------------------");
+        //     console.log(myJson);
+        //     setReviewList({ dat: myJson })
+        //     return myJson;
+        // });
         let d = await data.json();
-        // console.log('d---------------');
-        // console.log(d);
         setReviewListAll({ dat: d })
         setReviewList({ dat: d })
+        setRefreshingPosts(false)
+        setUserCurrentFilters([{ id: 1, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: "google" }, { id: 2, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: "facebook" }, { id: 3, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: "yelp" }, ])
     }
 
 
     const getGoogleReviews = (checked) => {
-        // alert(checked)
         if (checked) {
 
             let dt = reviewList.dat.filter(d => {
@@ -499,32 +487,26 @@ export const ReviewsLayout = () => {
                     return (d)
                 }
             })
-            console.log(dt)
             setReviewList({ dat: dt })
-        }else{
+        } else {
             let dt = reviewList.dat.filter(d => {
                 if (d.platform != "google") {
                     return (d)
                 }
             })
-            console.log(dt)
+            // console.log(dt)
             setReviewList({ dat: dt })
 
         }
     }
 
-
     const handlePresetMenuClick = async e => {
-        console.log(e)
-        console.log(e.key)
-        // alert(e.key)
         if (e.key != -1) {
             let dt = reviewList.dat.filter(d => {
                 if (d.starRating == e.key) {
                     return (d)
                 }
             })
-            console.log(dt)
             setReviewList({ dat: dt })
 
         } else {
@@ -534,16 +516,12 @@ export const ReviewsLayout = () => {
     }
 
     const handlePresetDateFilterClick = async e => {
-        console.log(e)
-        console.log(e.key)
-        // alert(e.key)
         if (e.key != -1) {
             let dt = reviewList.dat.filter(d => {
                 if (d.starRating == e.key) {
                     return (d)
                 }
             })
-            console.log(dt)
             setReviewList({ dat: dt })
 
         } else {
@@ -553,8 +531,6 @@ export const ReviewsLayout = () => {
     }
 
     const handlePresetMinMenuClick = async e => {
-        console.log(e)
-        console.log(e.key)
         if (e.key != -2) {
             setMinRating(e.key)
             setMaxRatingList(ratingList.filter(rating => {
@@ -563,7 +539,6 @@ export const ReviewsLayout = () => {
                 }
             }))
         }
-        // alert(e.key)
         if (e.key != -1) {
             getData()
             let dt = reviewList.dat.filter(d => {
@@ -571,19 +546,14 @@ export const ReviewsLayout = () => {
                     return (d)
                 }
             })
-            console.log('dddddddddddddddddddddddddd------------------')
-            console.log(dt)
             setReviewList({ dat: dt })
 
         } else {
             getData()
-            // setReviewList({ dat: data })
         }
     }
 
     const handlePresetMaxMenuClick = async e => {
-        console.log(e)
-        console.log(e.key)
         if (e.key != -2) {
             setMaxRating(e.key)
             setMinRatingList(ratingList?.filter(rating => {
@@ -592,80 +562,21 @@ export const ReviewsLayout = () => {
                 }
             }))
         }
-        // alert(e.key)
         if (e.key != -1) {
-            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-')
             getData()
             let dt = reviewList?.dat?.filter(d => {
-                console.log(d.starRating)
                 if (d.starRating <= e.key) {
                     return (d)
                 }
             })
-            console.log('dt-------------------')
-            console.log(dt)
             setReviewList({ dat: dt })
 
         } else {
             getData()
         }
     }
-
-    function onChangeUnrepliedOnly(e, checked, groupName) {
-
-
-        console.log(e)
-        console.log(groupName)
-        console.log(checked)
-        setUnrepliedOnly(checked)
-        setRadioFilter(groupName)
-        // setHideViewed(false)
-        // setAllResultsShown(false)
-        if (checked) {
-            // refetchSavedPosts()
-            let dt = reviewListAll.dat.filter(d => {
-                if (d.reviewReply == null) {
-                    return (d)
-                }
-            })
-            // console.log(dt)
-            setReviewList({ dat: dt })
-        } else {
-            // setReviewList({ dat: data })
-            setReviewList(reviewListAll)
-        }
-
-        // setActiveSelect('All')
-    }
-
-    function onChangeRadioDate(e, filter, groupName) {
-        let date = null
-        setRadioDateFilter(groupName)
-        // getData()    
-
-        if (filter === 'days'){
-            // alert(moment().subtract(7, filter));
-            date = moment().subtract(7, filter);
-        }else{
-            // alert(moment().subtract(1, filter));
-            date = moment().subtract(1, filter);
-        }
-        let dt = reviewListAll.dat.filter(d => {
-            try {
-                if (moment(d.createTime).utc().isAfter(date)) {
-                    return (d)
-                }
-            }
-            catch {
-                alert('error')
-            }
-        })
-        setReviewList({ dat: dt })
-    }
-
+    
     function onChangeDateFilter(date, dateString) {
-        // alert(date)
-        // alert(dateString)
         if (!date) {
 
             setDateFilter(null)
@@ -673,13 +584,10 @@ export const ReviewsLayout = () => {
         else {
             setDateFilter(moment(date))
         }
-        console.log("AAAAAAAA", date, dateString)
         if (dateString) {
             let dt = reviewList.dat.filter(d => {
                 try {
-                    // alert(moment(d.createTime).utc().isAfter(date))
                     if (moment(d.createTime).utc().isAfter(date)) {
-                        // moment(data.createTime).isAfter(dateString)
                         return (d)
                     }
                 }
@@ -691,74 +599,56 @@ export const ReviewsLayout = () => {
         }
         else {
             getData()
-            // setReviewList({ dat: data })
         }
     }
 
-    const returnMomentDateRange = (start, finish) => {
-        return [moment(start, "YYYY-MM-DD"), moment(finish, "YYYY-MM-DD")];
-    };
-
-    function onChangeRangePickerFilter(date, dateString) {
-        // console.log(date)
-        // console.log(dateString)
-        if (!date[0] && !date[1]) {
-
-            setRangeDateFilter(null)
-        }
-        else {
-            setRangeDateFilter(returnMomentDateRange(date[0], date[1]));
-        }
-        if (dateString[0]) {
-            let dt = reviewListAll.dat.filter(d => {
-                try {
-                    if (moment(d.createTime).utc().isAfter(date[0]) && moment(d.createTime).utc().isBefore(date[1])) {
+    // Filter by Response
+    function onChangeUnrepliedOnly(e, checked, groupName) {
+        setRefreshingPosts(true)
+        setUnrepliedOnly(checked)
+        setRadioFilter(groupName)
+        if (checked) {
+            let dt = []
+            if (groupName == 'Unreplied') {
+                dt = reviewListAll.dat.filter(d => {
+                    if (d.reviewReply == null) {
                         return (d)
                     }
-                }
-                catch {
-                    alert('error')
-                }
-            })
-            setReviewList({ dat: dt })
-        }
-        else {
-            setReviewList(reviewListAll)
-        }
-    }
-
-    function onSliderChange(value){
-        // console.log("value")
-        // console.log(value[0])
-        // console.log(value[1])
-        // getData()
-        let dt = reviewListAll?.dat?.filter(d => {
-            // console.log(d.starRating)
-            if (d.starRating >= value[0] && d.starRating <= value[1]) {
-                return (d)
+                })
+                    const newUserCurrentFilters = userCurrentFilters.filter(c => !( c.type === "Replies" && c.typeName === "Replies"))
+                    newUserCurrentFilters.push({ id: userCurrentFilters.length + 1, setType: "GENERAL", type: "Replies", typeName: "Replies", value: "Unreplied" })
+                    setUserCurrentFilters(newUserCurrentFilters)
+            } else {
+                dt = reviewListAll.dat.filter(d => {
+                    if (d.reviewReply != null) {
+                        return (d)
+                    }
+                })
+                    const newUserCurrentFilters = userCurrentFilters.filter(c => !( c.type === "Replies" && c.typeName === "Replies"))
+                    newUserCurrentFilters.push({ id: userCurrentFilters.length + 1, setType: "GENERAL", type: "Replies", typeName: "Replies", value: "Replied" })
+                    setUserCurrentFilters(newUserCurrentFilters)
             }
-        })
-        setReviewList({ dat: dt })
+            setReviewList({ dat: dt })
+        } else {
+            setReviewList(reviewListAll)
+            const newUserCurrentFilters = userCurrentFilters.filter(
+                c => {
+                    if( c.type !== "Replies" && c.typeName !== "Replies"){
+                        return c
+                    }
+                }
+            )
+            setUserCurrentFilters(newUserCurrentFilters)
+        }
+        setRadioFilter(groupName)
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
     }
     
-    function onClearRadioDate() {
-        setRadioDateFilter(null)
-        setReviewList(reviewListAll)
-        // getData()
-    }
-
-    function onClearFilters() {
-        // getData()
-        setReviewList(reviewListAll)
-        setDateFilter(null)
-        setRangeDateFilter(null)
-        setMinRating(-1)
-        setMaxRating(-1)
-        setMinRatingList(ratingList)
-        setMaxRatingList(ratingList)
-    }
-
+    // Filter by Platform
     function onSelectAll() {
+        setRefreshingPosts(true)
         let platlist = []
         if (allChecked) {
             setAllChecked(false)
@@ -776,24 +666,46 @@ export const ReviewsLayout = () => {
             setReviewList(reviewListAll)
         }
         setPlatformList(platlist)
+
+        console.log("cf1:",userCurrentFilters)
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c => !( c.type === "Platforms" && c.typeName === "Platforms")
+        )
+        console.log("cf2:",newUserCurrentFilters)
+        
+        console.log("platformList:",platformList)
+        platformList.filter(p => {
+            console.log("p",p)
+            if (p.checked){
+                newUserCurrentFilters.push({ id: newUserCurrentFilters.length + 1, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: p.name })
+            }
+        })
+        console.log("cf3:",newUserCurrentFilters)
+
+        setUserCurrentFilters(newUserCurrentFilters)
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
     }
+
     function onPlatformCheckSelect(platform) {
-        // getData()
+        setRefreshingPosts(true)
+
         let selectall = true
         let platlist = platformList.map(p => {
-            if (p.name == platform.name){
+            if (p.name == platform.name) {
                 p.checked = !platform.checked
-                if (p.checked){
+                if (p.checked) {
                     let dt = reviewListAll?.dat?.filter(d => {
                         if (d.platform == platform.name) {
                             return (d)
                         }
                     })
-                    let newdata = dt?.concat(...reviewList?.dat)
+                    let newdata = dt?.concat(reviewList?.dat)
                     setReviewList({ dat: newdata })
                 }
-                else{
-                    let dt = reviewListAll?.dat?.filter(d => {
+                else {
+                    let dt = reviewList?.dat?.filter(d => {
                         if (d.platform != platform.name) {
                             return (d)
                         }
@@ -801,44 +713,304 @@ export const ReviewsLayout = () => {
                     setReviewList({ dat: dt })
                 }
             }
-            if (!p.checked){
+            if (!p.checked) {
                 selectall = false
             }
             return p
         })
         setAllChecked(selectall)
         setPlatformList(platlist)
+
+        // 
+        // console.log("cf1:",userCurrentFilters)
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c => !( c.type === "Platforms" && c.typeName === "Platforms")
+        )
+        // console.log("cf2:",newUserCurrentFilters)
+        // console.log("platformList:",platformList)
+        
+        platformList.filter(p => {
+            // console.log("p",p)
+            if (p.checked){
+                newUserCurrentFilters.push({ id: newUserCurrentFilters.length + 1, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: p.name })
+            }
+        })
+        // console.log("cf3:",newUserCurrentFilters)
+        // setUserCurrentFilters([])
+        setUserCurrentFilters(newUserCurrentFilters)
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
     }
 
+    // Filter by date range
+    const returnMomentDateRange = (start, finish) => {
+        return [moment(start, "YYYY-MM-DD"), moment(finish, "YYYY-MM-DD")];
+    };
+
+    function onChangeRangePickerFilter(date, dateString) {
+        const newUserCurrentFilters = []
+        setRefreshingPosts(true)
+        if (!date[0] && !date[1]) {
+            setRangeDateFilter(null)
+        }
+        else {
+            setRangeDateFilter(returnMomentDateRange(date[0], date[1]));
+        }
+        if (dateString[0]) {
+            let dt = reviewListAll.dat.filter(d => {
+                try {
+                    if (moment(d.createTime).utc().isAfter(date[0]) && moment(d.createTime).utc().isBefore(date[1])) {
+                        return (d)
+                    }
+                }
+                catch {
+                    alert('error')
+                }
+            })
+            const newUserCurrentFilters = userCurrentFilters.filter(
+                c => !( c.type === "Date" && c.typeName === "Date Range")
+            )
+            newUserCurrentFilters.push({ id: newUserCurrentFilters.length + 1, setType: "GENERAL", type: "Date", typeName: "Date Range", value: `${dateString[0]} - ${dateString[1]}` })
+            setUserCurrentFilters(newUserCurrentFilters)
+            setReviewList({ dat: dt })
+            }
+        else {
+            const newUserCurrentFilters = userCurrentFilters.filter(
+                c => !( c.type === "Date" && c.typeName === "Date Range")
+            )
+            setUserCurrentFilters(newUserCurrentFilters)
+            setReviewList(reviewListAll)
+        }
+
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
+    }
+    
+    function onChangeRadioDate(e, filter, groupName) {
+        setRefreshingPosts(true)
+        let date = null
+        setRadioDateFilter(groupName)
+
+        if (filter === 'days') {
+            date = moment().subtract(7, filter);
+        } else {
+            date = moment().subtract(1, filter);
+        }
+        let dt = reviewListAll.dat.filter(d => {
+            try {
+                if (moment(d.createTime).utc().isAfter(date)) {
+                    return (d)
+                }
+            }
+            catch {
+                alert('error')
+            }
+        })
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c => !( c.type === "Date" && c.typeName === "Date Timeline")
+        )
+        newUserCurrentFilters.push({ id: newUserCurrentFilters.length + 1, setType: "GENERAL", type: "Date", typeName: "Date Timeline", value: `a ${groupName}` })
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList({ dat: dt })
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
+    }
+
+    function onClearRadioDate() {
+        setRefreshingPosts(true)
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c => !( c.type === "Date" && c.typeName === "Date Timeline")
+        )
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList(reviewListAll)
+        setRadioDateFilter(null)
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
+    }
+    
+    // Filter by Rating
+    function onSliderChange(value) {
+        setRefreshingPosts(true)
+        let dt = reviewListAll?.dat?.filter(d => {
+            if (d.starRating >= value[0] && d.starRating <= value[1]) {
+                return (d)
+            }
+        })
+        let val = value[0]==value[1]?value[0]:`${value[0]} to ${value[1]}` 
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c => !( c.type === "Review" && c.typeName === "Review")
+        )
+        newUserCurrentFilters.push({ id: newUserCurrentFilters.length + 1, setType: "GENERAL", type: "Review", typeName: "Review", value: `${val} star` })
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList({ dat: dt })
+        setSliderValue(value)
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300);
+    }
+
+    // Clear Filters
+    function onClearFilters() {
+        setRadioFilter("All")
+        setPlatformList([{ id: 1, name: 'google', checked: true, icon: GoogleIcon }, { id: 2, name: 'facebook', checked: true, icon: FacebooksIcon }, { id: 3, name: 'yelp', checked: true, icon: YelpIcon }])
+        setRangeDateFilter(null)
+        setRadioDateFilter(null)
+        setSliderValue([0, 5])
+        setReviewList(reviewListAll)
+        // setUserCurrentFilters([])
+        setUserCurrentFilters([{ id: 1, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: "google" }, { id: 2, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: "facebook" }, { id: 3, setType: "GENERAL", type: "Platforms", typeName: "Platforms", value: "yelp" }, ])
+        // setFetchData(true)
+    }
+
+    // Refresh Reviews after change in filter tags
+    function refreshReviews() {
+        setRefreshingPosts(true)
+        setRadioFilter(radioFilter)
+        setReviewList(reviewList)
+        setPlatformList(platformList)
+        setRangeDateFilter(radioDateFilter)
+        setSliderValue(sliderValue)
+        setTimeout(() => {
+            setRefreshingPosts(false)
+        }, 300)
+    }
+
+
+
+    //
+    // Filter Breadcrumb function
+    //
 
     const removeFilterText = id => {
         setUserCurrentFilters(userCurrentFilters.filter(f => f.id !== id))
     }
 
-    useEffect(()=>{
-        getData()
-      }, [])
+    const removeResponse = filter => {
+        let dt = []
+        if (filter.value === "Unreplied"){
+            dt = reviewListAll.dat.filter(d => {
+                if (d.reviewReply != null) {
+                    return (d)
+                }
+            })
+        }else if (filter.value === "Replied"){
+            dt = reviewListAll.dat.filter(d => {
+                if (d.reviewReply == null) {
+                    return (d)
+                }
+            })
+        }else {
+            
+        }
+        setRadioFilter("All")
+        
+        
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c =>
+            !(
+                c.type === filter.type &&
+                    c.typeName === filter.typeName &&
+                    c.value === filter.value
+                )
+        )
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList({dat: dt})
+    }
 
-    const left = css`
-    left: -0.2rem;
-    padding-left: 0.5rem;
-  `
-    const SidebarArrow = styled.div`
-    position: absolute;
-    padding: 10px 5px;
-    top: 50%;
-    ${props => props.right && "right: -0.2rem"};
-    ${props => props.left && left};
-    background-color: #fff;
-    border: 1px solid #eeeef1;
-    border-radius: 4px;
-    z-index: 1;
-    cursor: pointer;
-  `
+    const removePlatform = filter => {
+        console.log("filter", filter)
+        let filterSubgroup = platformList
+        filterSubgroup = filterSubgroup.map(f => {
+            if (filter.value === f.name) {
+                console.log("filter.value, f.value")
+                console.log(filter.value, f.name)
+                f.checked = false
+                let dt = reviewList?.dat?.filter(d => {
+                    if (d.platform !== f.name) {
+                        return (d)
+                    }
+                })
+                setReviewList({ dat: dt })
+            }
+            return f
+        })
+
+        let selection = filterSubgroup.filter(f => f.checked)
+        setAllChecked(selection.length?true:false)
 
 
-    console.log('reviewList---------------')
-    console.log(platformList.filter(p => console.log(p.id)))
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c =>
+                !(
+                    c.type === filter.type &&
+                    c.typeName === filter.typeName &&
+                    c.value === filter.value
+                )
+        )
+        console.log("newUserCurrentFilters", newUserCurrentFilters)
+        console.log("newPlatformList", filterSubgroup)
+        setPlatformList(filterSubgroup)
+        setUserCurrentFilters(newUserCurrentFilters)
+    }
+
+    const removeDate = filter => {
+        
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c =>
+            !(
+                c.type === filter.type &&
+                c.typeName === filter.typeName &&
+                c.value === filter.value
+            )
+        )
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList(reviewListAll)
+        setRangeDateFilter(null)        
+    }
+
+    const removeDateTimeline = filter => {
+        
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c =>
+            !(
+                c.type === filter.type &&
+                c.typeName === filter.typeName &&
+                c.value === filter.value
+            )
+        )
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList(reviewListAll)
+        setRadioDateFilter(null)
+    }
+
+    const removeReviewRating = filter => {
+        
+        const newUserCurrentFilters = userCurrentFilters.filter(
+            c =>
+            !(
+                c.type === filter.type &&
+                c.typeName === filter.typeName &&
+                c.value === filter.value
+            )
+        )
+        setUserCurrentFilters(newUserCurrentFilters)
+        setReviewList(reviewListAll)
+        setSliderValue([0,5])
+    }
+
+    useEffect(() => {
+        console.log("DATAAAAAAA!")
+        setTimeout(() => {
+            getData()
+        }, 3000)
+        setFetchData(false)
+    }, [fetchData])
+
+
     return (
         <Container id={"prospect-cntr"} scroll>
 
@@ -890,6 +1062,18 @@ export const ReviewsLayout = () => {
                                 </Tooltip>
                                 <Tooltip
                                     placement="bottom"
+                                    title={"Replied"}
+                                >
+                                    <RadioButtonCustom
+                                        key={'Replied'}
+                                        value={"Replied"}
+                                        onClick={e => { onChangeUnrepliedOnly(e, true, "Replied") }}
+                                    >
+                                        Replied
+                                    </RadioButtonCustom>
+                                </Tooltip>
+                                <Tooltip
+                                    placement="bottom"
                                     title={"Unreplied"}
                                 >
                                     <RadioButtonCustom
@@ -916,21 +1100,21 @@ export const ReviewsLayout = () => {
                                 style={{ maxHeight: "400px", overflow: "auto" }}
                             >
                                 <TabSection>
-                                <Checkbox checked={allChecked} onChange={onSelectAll} style={{ marginBottom: '0.2rem', marginLeft: '1px' }}>
-                                    Select/DeselectALL
-                                    <br />
-                                </Checkbox>
-                                {platformList && (
+                                    <Checkbox checked={allChecked} onChange={onSelectAll} style={{ marginBottom: '0.2rem', marginLeft: '1px' }}>
+                                        Select/DeselectALL
+                                        <br />
+                                    </Checkbox>
+                                    {platformList && (
                                         platformList.map(platform => {
-                                           return <Fragment key={platform.id}>
+                                            return <Fragment key={platform.id}>
                                                 <Checkbox checked={platform.checked} onChange={() => onPlatformCheckSelect(platform)} style={{ marginBottom: '0.2rem', marginLeft: '1px', width: '166px' }}>
                                                     <SVGIcon component={platform.name === 'google' ? GoogleIcon : platform.name === 'facebook' ? FacebooksIcon : YelpIcon} style={{ height: '20px', width: '20px', marginRight: '0.2rem' }} alt="Rating" />
                                                     {platform.name}
                                                     <br />
                                                 </Checkbox>
                                             </Fragment>
-                                        })        
-                                )}
+                                        })
+                                    )}
                                 </TabSection>
                                 {/* <Divider /> */}
                             </TabPane>
@@ -939,73 +1123,73 @@ export const ReviewsLayout = () => {
                             defaultActiveKey="Makes"
                             tabPosition="top"
                             animated={false}
-                            >
+                        >
 
                             <TabPane
                                 tab={'Filter by date range'}
-                                key={1}
+                                key={2}
                                 style={{ maxHeight: "400px", overflow: "auto" }}
-                                >
-                                <TabSection style={{padding: "0 10px"}}>
+                            >
+                                <TabSection style={{ padding: "0 10px" }}>
                                     {/* <DatePicker style={{ minWidth: "100%" }} placeholder="Select date" value={dateFilter} onChange={onChangeDateFilter} /> */}
                                     <RangePicker onChange={onChangeRangePickerFilter} value={rangeDateFilter} />
                                 </TabSection>
                                 <Divider />
-                                
 
-                                <RadioGroupCustom style={{padding: "0 10px"}}
-                                key={'radioDateFilter'}
-                                buttonStyle="solid"
-                                value={radioDateFilter}
-                            >
-                                <Tooltip
-                                    placement="bottom"
-                                    title={"Week"}
-                                    type={'primary'}
-                                >
-                                    <RadioButtonCustom
-                                        key={'Week'}
-                                        value={"Week"}
-                                        onClick={e => { onChangeRadioDate(e, 'days', "Week") }}
-                                    >
-                                        Week
-                                    </RadioButtonCustom>
-                                </Tooltip>
-                                <Tooltip
-                                    placement="bottom"
-                                    title={"Month"}
-                                >
-                                    <RadioButtonCustom
-                                        key={'Month'}
-                                        value={"Month"}
-                                        onClick={e => { onChangeRadioDate(e, 'months', "Month") }}
-                                    >
-                                        Month
-                                    </RadioButtonCustom>
-                                </Tooltip>
-                                <Tooltip
-                                    placement="bottom"
-                                    title={"Year"}
-                                >
-                                    <RadioButtonCustom
-                                        key={'Year'}
-                                        value={"Year"}
-                                        onClick={e => { onChangeRadioDate(e, 'years', "Year") }}
-                                    >
-                                        Year
-                                    </RadioButtonCustom>
-                                </Tooltip>
-                                {radioDateFilter != null && (
-                                    <TooltipButton
-                                    tooltip="Remove"
-                                    shape="circle"
-                                    onClick={onClearRadioDate}
-                                    alt="Remove"
-                                    component={RemoveIcon}
 
-                                    />
-                                )}
-                            </RadioGroupCustom>
+                                <RadioGroupCustom style={{ padding: "0 10px" }}
+                                    key={'radioDateFilter'}
+                                    buttonStyle="solid"
+                                    value={radioDateFilter}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        title={"Week"}
+                                        type={'primary'}
+                                    >
+                                        <RadioButtonCustom
+                                            key={'Week'}
+                                            value={"Week"}
+                                            onClick={e => { onChangeRadioDate(e, 'days', "Week") }}
+                                        >
+                                            Week
+                                        </RadioButtonCustom>
+                                    </Tooltip>
+                                    <Tooltip
+                                        placement="bottom"
+                                        title={"Month"}
+                                    >
+                                        <RadioButtonCustom
+                                            key={'Month'}
+                                            value={"Month"}
+                                            onClick={e => { onChangeRadioDate(e, 'months', "Month") }}
+                                        >
+                                            Month
+                                        </RadioButtonCustom>
+                                    </Tooltip>
+                                    <Tooltip
+                                        placement="bottom"
+                                        title={"Year"}
+                                    >
+                                        <RadioButtonCustom
+                                            key={'Year'}
+                                            value={"Year"}
+                                            onClick={e => { onChangeRadioDate(e, 'years', "Year") }}
+                                        >
+                                            Year
+                                        </RadioButtonCustom>
+                                    </Tooltip>
+                                    {radioDateFilter != null && (
+                                        <TooltipButton
+                                            tooltip="Remove"
+                                            shape="circle"
+                                            onClick={onClearRadioDate}
+                                            alt="Remove"
+                                            component={RemoveIcon}
+
+                                        />
+                                    )}
+                                </RadioGroupCustom>
                             </TabPane>
                         </FilterTab>
                         <FilterTab
@@ -1016,7 +1200,7 @@ export const ReviewsLayout = () => {
 
                             <TabPane
                                 tab={'Filter by Rating'}
-                                key={1}
+                                key={3}
                                 style={{ maxHeight: "400px", overflow: "auto" }}
                             >
                                 <TabSection>
@@ -1065,53 +1249,53 @@ export const ReviewsLayout = () => {
                                         </ContainerNavigation>
 
                                     </ButtonGroupCustom> */}
-                                    <Slider  marks={rating} range step={1}  defaultValue={[0,5]}    min={0} max={5} onChange={onSliderChange} style={{width: '90%'}}/>
+                                    <Slider marks={rating} range step={1} defaultValue={sliderValue} value={sliderValue} min={0} max={5} onChange={onSliderChange} style={{ width: '90%' }} />
                                 </TabSection>
                             </TabPane>
                         </FilterTab>
 
                         <br />
-                        <Button
+                        {/* <Button
                             type="primary"
                             style={{ width: "100%" }}
                             onClick={() => { onClearFilters() }}
                         >
                             Clear Filters
-                        </Button>
+                        </Button> */}
 
                     </ContentSidebar>
                 )}
                 <ContentBody scroll style={{ maxHeight: "80vh", overflowX: "hidden" }}>
 
-                {true && (
-                    <FilterBreadcrumbs
-                    userCurrentFilters={[{id: "17995", setType: "GENERAL", type: "Range", typeName: "Range", value: "2 Weeks"},]}
-                    removeText={removeFilterText}
-                    removeMulti={removeFilterText}
-                    removeSelect={removeFilterText}
-                    removeRange={removeFilterText}
-                    refresh={onClearFilters}
-                    refreshingPosts={false}
-                    clearAll={onClearFilters}
-                    />
-                )}
+                    {!false && (
+                        <>
+                            {/* {console.log("userCurrentFilters", userCurrentFilters)} */}
+                            <FilterBreadcrumbs
+                                userCurrentFilters={userCurrentFilters}
+                                removeText={removeFilterText}
+                                removeMulti={removePlatform}
+                                removeSelect={removeResponse}
+                                removeRange={removeReviewRating}
+                                removeDate={removeDate}
+                                removeDateTimeline={removeDateTimeline}
+                                refresh={refreshReviews}
+                                // refresh={onClearFilters}
+                                refreshingPosts={refreshingPosts}
+                                clearAll={onClearFilters}
+                            />
+                        </>
+                    )}
 
                     {reviewList.dat && (
                         reviewList.dat.map((dat, i) => {
-                            return (<Review data={dat} path="/" />)
+                            return (<Review key={dat.reviewId} data={dat} path="/" />)
                         })
                     )}
-                    {!reviewList.dat && (
-                        <h1>No Reviews Found!</h1>
+                    {!reviewList.dat || !reviewList.dat.length && (
+                        <Empty style={{marginTop: "30vh"}} />
                     )}
                 </ContentBody>
             </Content>
-
-            {/* {
-          reviewList.dat.map((dat,i) => { 
-            return (<Review data={dat} path="/" />)
-          })
-        } */}
         </Container>
     )
 }
